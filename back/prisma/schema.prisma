@@ -13,12 +13,131 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Subscription {
-  id          String   @id @default(uuid())
-  name        String
-  price       Float
-  frequency   String // "monthly" ou "yearly"
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+// My model for MesAbos
+
+model User {
+  id        String   @id @default(uuid())
+  email     String?  @unique
+  password  String? // Null si connexion via OAuth2
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // OAuth2
+  provider   AuthProvider // local, google
+  providerId String?      @unique
+
+  sessions      Session[]
+  subscriptions Subscription[]
+  payments      Payment[]
+  budgets       Budget[]
+
+  BankAccount BankAccount[]
+
+  Transaction Transaction[]
 }
 
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id         String    @id @default(uuid())
+  name       String
+  amount     Float
+  frequency  Frequency // Mensuel ou Annuel
+  startDate  DateTime
+  endDate    DateTime?
+  userId     String
+  categoryId String?
+
+  user     User      @relation(fields: [userId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  subscriptions Subscription[]
+
+  Transaction Transaction[]
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  subscriptionId String
+  userId         String
+  amount         Float
+  paymentDate    DateTime
+  status         PaymentStatus // PAYÉ ou EN ATTENTE
+
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Budget {
+  id         String @id @default(uuid())
+  userId     String
+  month      Int
+  year       Int
+  maxAmount  Float
+  totalSpent Float  @default(0) // Mise à jour avec les paiements
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BankAccount {
+  id         String @id @default(uuid())
+  userId     String
+  provider   String // ex: "BudgetInsight", "Plaid", "Truelayer"
+  externalId String @unique // ID du compte dans l'API externe
+  balance    Float?
+
+  user         User          @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  userId        String
+  bankAccountId String?
+  description   String
+  amount        Float
+  date          DateTime
+  categoryId    String?
+
+  user        User         @relation(fields: [userId], references: [id])
+  bankAccount BankAccount? @relation(fields: [bankAccountId], references: [id])
+  category    Category?    @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+enum Frequency {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+}
+
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
