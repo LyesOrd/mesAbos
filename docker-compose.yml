@@ -19,6 +19,9 @@ services:
       - "3000:3000"
     depends_on:
       - bdd
+    volumes:
+      - ./back:/app
+      - /app/node_modules
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/mesabos_db"
 
