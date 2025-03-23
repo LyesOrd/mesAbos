@@ -25,9 +25,13 @@ restart: stop start
 flogs:
 	docker logs mesabos_front -f
 
-# Voir les logs du front
+# Voir les logs du service de bdd
 blogs:
 	docker logs mesabos_bdd -f
+
+# Voir les logs du service nest
+apilogs:
+	docker logs mesabos_back -f
 
 # Nettoyer les containers, images et volumes (ATTENTION : supprime les volumes)
 clean:
@@ -43,6 +47,8 @@ help:
 	@echo "  stop       - Arrêter les services Docker"
 	@echo "  restart    - Redémarrer les services Docker"
 	@echo "  build      - Construire les images Docker"
-	@echo "  logs       - Voir les logs des services"
+	@echo "  flogs      - Voir les logs du service front"
+	@echo "  blogs      - Voir les logs du service bdd"
+	@echo "  apilogs    - Voir les logs du service nest"
 	@echo "  clean      - Supprimer les containers, images et volumes Docker"
 	@echo "  help       - Afficher cette aide"
