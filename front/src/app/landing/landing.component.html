@@ -1,316 +1,114 @@
-<!-- landing-page.component.html -->
-<div class="landing-page">
-  <!-- Header avec Menu -->
-  <p-menubar [model]="menuItems">
-    <ng-template pTemplate="start">
-      <h2 class="company-name m-0">CompanyName</h2>
-    </ng-template>
-    <ng-template pTemplate="end">
-      <p-button
-        label="Se connecter"
-        icon="pi pi-user"
-        styleClass="p-button-outlined mr-2"
-      ></p-button>
-      <p-button label="S'inscrire" icon="pi pi-plus"></p-button>
-    </ng-template>
-  </p-menubar>
+<!-- src/app/landing/landing.component.html -->
+<app-navbar></app-navbar>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero-section">
-    <div class="p-grid p-align-center">
-      <div
-        class="p-col-12 p-md-6 p-text-center p-text-md-left p-pt-4 p-md-pt-0"
-      >
-        <h1 class="mb-3">Bienvenue sur notre plateforme</h1>
-        <h2 class="mb-4">Une solution moderne pour vos besoins digitaux</h2>
-        <p-button label="Commencer" styleClass="mr-3"></p-button>
-        <p-button
-          label="En savoir plus"
-          styleClass="p-button-outlined"
-        ></p-button>
-      </div>
-      <div class="p-col-12 p-md-6 p-mt-4 p-md-mt-0">
-        <p-image
-          src="https://via.placeholder.com/600x400"
-          alt="Hero Image"
-          width="100%"
-        ></p-image>
-      </div>
-    </div>
-  </section>
+<!-- HERO ====================================================== -->
+<section
+  id="hero"
+  class="bg-primary-500 text-surface-0 flex flex-col items-center text-center gap-6 py-24 px-6"
+>
+  <h1 class="text-4xl md:text-6xl font-extrabold max-w-3xl">
+    Gérez vos abonnements <span class="text-primary-100">sans effort</span>
+  </h1>
+  <p class="max-w-xl text-lg opacity-90">
+    MesAbos centralise vos dépenses mensuelles et annuelles, en un coup d’œil.
+  </p>
+  <button
+    pButton
+    label="Commencer"
+    class="px-8 py-3 text-lg font-semibold shadow-lg"
+    routerLink="/register"
+  ></button>
+</section>
 
-  <!-- Features Section -->
-  <section id="features" class="p-mt-6 p-mb-6">
-    <div class="p-container">
-      <p-card>
-        <ng-template pTemplate="header">
-          <h2 class="p-text-center p-my-4">Nos fonctionnalités</h2>
-        </ng-template>
+<!-- FEATURES ================================================== -->
+<section id="features" class="py-20 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl font-bold mb-12 text-center">Fonctionnalités clés</h2>
 
-        <div class="p-grid">
-          <div class="p-col-12 p-md-4" *ngFor="let feature of features">
-            <p-card [header]="feature.title" styleClass="feature-card">
-              <ng-template pTemplate="header">
-                <div class="p-text-center p-mt-3">
-                  <i
-                    [class]="feature.icon"
-                    style="font-size: 2.5rem; color: var(--primary-color)"
-                  ></i>
-                </div>
-              </ng-template>
-              <p class="p-text-center">{{ feature.description }}</p>
-            </p-card>
-          </div>
-        </div>
-
-        <div class="p-mt-4">
-          <h3>Rechercher une fonctionnalité</h3>
-          <p-autocomplete
-            [(ngModel)]="value"
-            [dropdown]="true"
-            [suggestions]="items"
-            (completeMethod)="search($event)"
-            placeholder="Rechercher une fonctionnalité..."
-            [style]="{ width: '100%' }"
-            (onSelect)="onSelect($event)"
-            (onClear)="onClear()"
-          >
-          </p-autocomplete>
-        </div>
-      </p-card>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="p-mt-6 p-mb-6">
-    <div class="p-container">
-      <h2 class="p-text-center p-mb-5">Ce que disent nos clients</h2>
-
-      <p-carousel
-        [value]="testimonials"
-        [numVisible]="3"
-        [numScroll]="1"
-        [circular]="true"
-        [responsiveOptions]="responsiveOptions"
-      >
-        <ng-template let-testimonial pTemplate="item">
-          <div class="p-px-3">
-            <p-card styleClass="testimonial-card">
-              <ng-template pTemplate="header">
-                <div class="p-text-center p-mt-3">
-                  <p-avatar
-                    [image]="testimonial.image"
-                    size="large"
-                    shape="circle"
-                  ></p-avatar>
-                </div>
-              </ng-template>
-              <p class="p-text-center p-mt-3">{{ testimonial.comment }}</p>
-              <ng-template pTemplate="footer">
-                <div class="p-text-center">
-                  <h3 class="p-mb-1">{{ testimonial.name }}</h3>
-                  <p class="p-text-secondary p-mb-0">{{ testimonial.role }}</p>
-                </div>
-              </ng-template>
-            </p-card>
-          </div>
-        </ng-template>
-      </p-carousel>
-    </div>
-  </section>
-
-  <!-- Pricing Section avec TabView -->
-  <section id="pricing" class="p-mt-6 p-mb-6">
-    <div class="p-container">
-      <h2 class="p-text-center p-mb-5">Nos offres</h2>
-
-      <p-tabs>
-        <p-tabpanel header="Mensuel">
-          <div class="p-grid">
-            <div class="p-col-12 p-md-4" *ngFor="let plan of pricingPlans">
-              <p-card
-                [header]="plan.name"
-                [subheader]="'€' + plan.monthlyPrice + '/mois'"
-                styleClass="pricing-card"
-              >
-                <ul class="plan-features">
-                  <li *ngFor="let feature of plan.features">
-                    <i class="pi pi-check p-mr-2"></i>{{ feature }}
-                  </li>
-                </ul>
-                <ng-template pTemplate="footer">
-                  <div class="p-text-center">
-                    <p-button
-                      label="Commencer"
-                      [styleClass]="
-                        plan.recommended
-                          ? 'p-button-success'
-                          : 'p-button-outlined'
-                      "
-                      [style]="{ width: '100%' }"
-                    ></p-button>
-                  </div>
-                </ng-template>
-              </p-card>
-            </div>
-          </div>
-        </p-tabpanel>
-        <p-tabpanel header="Annuel">
-          <div class="p-grid">
-            <div class="p-col-12 p-md-4" *ngFor="let plan of pricingPlans">
-              <p-card
-                [header]="plan.name"
-                [subheader]="'€' + plan.monthlyPrice * 10 + '/an'"
-                styleClass="pricing-card"
-              >
-                <p class="p-text-center p-text-success">
-                  Économisez 17% avec un abonnement annuel
-                </p>
-                <ul class="plan-features">
-                  <li *ngFor="let feature of plan.features">
-                    <i class="pi pi-check p-mr-2"></i>{{ feature }}
-                  </li>
-                </ul>
-                <ng-template pTemplate="footer">
-                  <div class="p-text-center">
-                    <p-button
-                      label="Commencer"
-                      [styleClass]="
-                        plan.recommended
-                          ? 'p-button-success'
-                          : 'p-button-outlined'
-                      "
-                      [style]="{ width: '100%' }"
-                    ></p-button>
-                  </div>
-                </ng-template>
-              </p-card>
-            </div>
-          </div>
-        </p-tabpanel>
-      </p-tabs>
-    </div>
-  </section>
-
-  <!-- FAQ Section avec Accordion -->
-  <section id="faq" class="p-mt-6 p-mb-6">
-    <div class="p-container">
-      <h2 class="p-text-center p-mb-5">Questions fréquentes</h2>
-
-      <p-accordion>
-        <p-accordion-tab
-          *ngFor="let faqItem of faqItems"
-          [header]="faqItem.question"
-        >
-          <p>{{ faqItem.answer }}</p>
-        </p-accordion-tab>
-      </p-accordion>
-    </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section id="contact" class="p-mt-6 p-mb-6">
-    <div class="p-container">
-      <p-card>
-        <div class="p-grid p-ai-center">
-          <div class="p-col-12 p-md-6">
-            <h2>Prêt à commencer ?</h2>
-            <p class="p-mb-4">
-              Inscrivez-vous à notre newsletter pour recevoir les dernières
-              mises à jour et offres spéciales.
-            </p>
-
-            <div class="p-inputgroup p-mb-3">
-              <input pInputText placeholder="Votre adresse email" />
-              <p-button label="S'inscrire" icon="pi pi-envelope"></p-button>
-            </div>
-
-            <small class="p-text-secondary"
-              >Nous respectons votre vie privée. Vous pouvez vous désinscrire à
-              tout moment.</small
-            >
-          </div>
-
-          <div class="p-col-12 p-md-6 p-mt-4 p-md-mt-0">
-            <h3>Contactez-nous</h3>
-            <form>
-              <div class="p-field p-mb-3">
-                <label for="name" class="p-d-block p-mb-2">Nom</label>
-                <input pInputText id="name" styleClass="p-w-100" />
-              </div>
-              <div class="p-field p-mb-3">
-                <label for="email" class="p-d-block p-mb-2">Email</label>
-                <input pInputText id="email" styleClass="p-w-100" />
-              </div>
-              <div class="p-field p-mb-3">
-                <label for="message" class="p-d-block p-mb-2">Message</label>
-                <textarea
-                  pTextarea="message"
-                  [rows]="5"
-                  styleClass="p-w-100"
-                ></textarea>
-              </div>
-              <p-button label="Envoyer" icon="pi pi-send"></p-button>
-            </form>
-          </div>
-        </div>
-      </p-card>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <p-footer>
-    <div class="p-grid">
-      <div class="p-col-12 p-md-4 p-mb-4">
-        <h3>CompanyName</h3>
-        <p>
-          Nous créons des solutions digitales innovantes depuis 2010. Notre
-          mission est de simplifier votre quotidien grâce à la technologie.
-        </p>
-      </div>
-
-      <div class="p-col-12 p-md-2 p-mb-4">
-        <h4>Liens</h4>
-        <p-menu [model]="footerMenuItems"></p-menu>
-      </div>
-
-      <div class="p-col-12 p-md-3 p-mb-4">
-        <h4>Contact</h4>
-        <ul class="contact-info">
-          <li>
-            <i class="pi pi-map-marker p-mr-2"></i> 123 Rue Exemple, 75000 Paris
-          </li>
-          <li><i class="pi pi-phone p-mr-2"></i> +33 1 23 45 67 89</li>
-          <li><i class="pi pi-envelope p-mr-2"></i> contact.example.com</li>
-        </ul>
-      </div>
-
-      <div class="p-col-12 p-md-3">
-        <h4>Suivez-nous</h4>
-        <div class="social-icons">
-          <p-button
-            icon="pi pi-facebook"
-            styleClass="p-button-rounded p-button-text p-mr-2"
-          ></p-button>
-          <p-button
-            icon="pi pi-twitter"
-            styleClass="p-button-rounded p-button-text p-mr-2"
-          ></p-button>
-          <p-button
-            icon="pi pi-instagram"
-            styleClass="p-button-rounded p-button-text p-mr-2"
-          ></p-button>
-          <p-button
-            icon="pi pi-linkedin"
-            styleClass="p-button-rounded p-button-text"
-          ></p-button>
-        </div>
-      </div>
+  <div class="grid md:grid-cols-3 gap-10">
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-wallet text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Vue dépense globale</h3>
+      <p class="opacity-80">
+        Visualisez instantanément vos coûts mensuels et annuels.
+      </p>
     </div>
 
-    <div class="p-text-center p-mt-4">
-      <p-divider></p-divider>
-      <p>&copy; 2025 CompanyName. Tous droits réservés.</p>
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-bell text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Alertes d’échéance</h3>
+      <p class="opacity-80">
+        Recevez un rappel avant chaque renouvellement automatique.
+      </p>
     </div>
-  </p-footer>
-</div>
+
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-chart-line text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Statistiques évolutives</h3>
+      <p class="opacity-80">
+        Suivez la progression de vos dépenses et optimisez votre budget.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING =================================================== -->
+<section
+  id="pricing"
+  class="bg-surface-50 dark:bg-surface-800 py-20 px-6 border-y border-surface-200 dark:border-surface-700"
+>
+  <h2 class="text-3xl font-bold mb-12 text-center">Nos tarifs</h2>
+
+  <div
+    class="flex flex-col md:flex-row justify-center gap-10 max-w-5xl mx-auto"
+  >
+    <!-- Plan Gratuit -->
+    <div class="flex-1 p-8 rounded-2xl border shadow-sm text-center">
+      <h3 class="text-xl font-semibold mb-4">Gratuit</h3>
+      <p class="text-4xl font-bold mb-2">0€</p>
+      <p class="opacity-70 mb-6">Idéal pour débuter.</p>
+      <ul class="text-left mb-8 space-y-2">
+        <li>✅ 5 abonnements</li>
+        <li>✅ Rappels de renouvellement</li>
+        <li>❌ Graphiques avancés</li>
+      </ul>
+      <button pButton label="Choisir" class="w-full"></button>
+    </div>
+
+    <!-- Plan Pro -->
+    <div
+      class="flex-1 p-8 rounded-2xl border-2 border-primary shadow-lg text-center transform md:-translate-y-4"
+    >
+      <h3 class="text-xl font-semibold mb-4">Pro</h3>
+      <p class="text-4xl font-bold mb-2">9,99€/mois</p>
+      <p class="opacity-70 mb-6">Pour les utilisateurs exigeants.</p>
+      <ul class="text-left mb-8 space-y-2">
+        <li>✅ Abonnements illimités</li>
+        <li>✅ Graphiques détaillés</li>
+        <li>✅ Support prioritaire</li>
+      </ul>
+      <button pButton label="Commencer" class="p-button-raised w-full"></button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT =================================================== -->
+<section id="contact" class="py-20 px-6 max-w-4xl mx-auto text-center">
+  <h2 class="text-3xl font-bold mb-8">Une question ?</h2>
+  <p class="mb-6 opacity-80">L’équipe MesAbos répond sous 24 h.</p>
+
+  <!-- <p-inputTextarea
+    autoResize
+    rows="4"
+    class="w-full mb-4"
+    placeholder="Votre message"
+  ></p-inputTextarea> -->
+
+  <button pButton label="Envoyer" class="px-8 py-3"></button>
+</section>
+
+<!-- FOOTER ==================================================== -->
+<footer
+  class="bg-surface-0 dark:bg-surface-900 text-sm text-center py-6 border-t border-surface-200 dark:border-surface-700"
+>
+  © {{ currentYear }} MesAbos
+</footer>

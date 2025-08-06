@@ -14,14 +14,8 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       theme: {
         preset: Aura,
+        options: { darkModeSelector: '.p-dark' },
       },
-      zIndex: {
-        modal: 1100,
-        overlay: 1000,
-        menu: 1000,
-        tooltip: 1100,
-      },
-      ripple: true,
     }),
   ],
 };

@@ -19,10 +19,12 @@
     "@angular/platform-browser-dynamic": "^19.2.3",
     "@angular/router": "^19.2.3",
     "@primeng/themes": "^19.0.10",
+    "@primeuix/themes": "^1.2.0",
     "@tailwindcss/cli": "^4.1.4",
     "@tailwindcss/postcss": "^4.1.4",
     "postcss": "^8.5.3",
-    "primeng": "^19.0.10",
+    "primeicons": "^7.0.0",
+    "primeng": "19.0.10",
     "tailwindcss": "^4.1.4",
     "tailwindcss-primeui": "^0.6.1"
   },

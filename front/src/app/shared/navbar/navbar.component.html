@@ -1,41 +1,39 @@
-<p-menubar [model]="items">
-  <ng-template #start>
-    <svg
-      width="33"
-      height="35"
-      viewBox="0 0 33 35"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="..." fill="var(--primary-color)" />
-    </svg>
-  </ng-template>
-  <ng-template #item let-item let-root="root">
-    <a pRipple class="flex items-center p-menubar-item-link">
-      <span>{{ item.label }}</span>
-      <p-badge
-        *ngIf="item.badge"
-        [ngClass]="{ 'ml-auto': !root, 'ml-2': root }"
-        [value]="item.badge"
-      />
-      <span
-        *ngIf="item.shortcut"
-        class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1"
-        >{{ item.shortcut }}</span
-      >
-      <i
-        *ngIf="item.items"
-        [ngClass]="['ml-auto pi', root ? 'pi-angle-down' : 'pi-angle-right']"
-      ></i>
-    </a>
-  </ng-template>
-  <ng-template #end>
-    <div class="flex items-center gap-2">
-      <input type="text" pInputText placeholder="Search" class="w-36" />
-      <p-avatar
-        image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-        shape="circle"
-      />
-    </div>
-  </ng-template>
-</p-menubar>
+<!-- src/app/shared/navbar/navbar.component.html -->
+<nav
+  class="bg-surface-0 dark:bg-surface-900 w-full border-b border-surface-200 dark:border-surface-700"
+>
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <!-- Logo -->
+    <a routerLink="/" class="text-2xl font-bold tracking-tight"> mesAbos </a>
+
+    <!-- Liens vers les sections (ancre) -->
+    <ul class="hidden md:flex items-center gap-8 font-medium">
+      <li><a href="#hero" class="hover:text-primary">Accueil</a></li>
+      <li>
+        <a href="#features" class="hover:text-primary">Fonctionnalités</a>
+      </li>
+      <li><a href="#pricing" class="hover:text-primary">Tarifs</a></li>
+      <li><a href="#contact" class="hover:text-primary">Contact</a></li>
+    </ul>
+
+    <!-- Bouton connexion -->
+    <button
+      pButton
+      label="Connexion"
+      class="p-button-sm md:p-button-md"
+      routerLink="/login"
+    ></button>
+
+    <!-- Burger mobile -->
+    <p-menubar class="md:hidden" [model]="mobileItems" #menu>
+      <ng-template pTemplate="start">
+        <button
+          pButton
+          icon="pi pi-bars"
+          class="p-button-text"
+          (click)="menu.toggle($event)"
+        ></button>
+      </ng-template>
+    </p-menubar>
+  </div>
+</nav>
