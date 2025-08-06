@@ -1,1 +1,114 @@
-<p>landing works!</p>
+<!-- src/app/landing/landing.component.html -->
+<app-navbar></app-navbar>
+
+<!-- HERO ====================================================== -->
+<section
+  id="hero"
+  class="bg-primary-500 text-surface-0 flex flex-col items-center text-center gap-6 py-24 px-6"
+>
+  <h1 class="text-4xl md:text-6xl font-extrabold max-w-3xl">
+    Gérez vos abonnements <span class="text-primary-100">sans effort</span>
+  </h1>
+  <p class="max-w-xl text-lg opacity-90">
+    MesAbos centralise vos dépenses mensuelles et annuelles, en un coup d’œil.
+  </p>
+  <button
+    pButton
+    label="Commencer"
+    class="px-8 py-3 text-lg font-semibold shadow-lg"
+    routerLink="/register"
+  ></button>
+</section>
+
+<!-- FEATURES ================================================== -->
+<section id="features" class="py-20 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl font-bold mb-12 text-center">Fonctionnalités clés</h2>
+
+  <div class="grid md:grid-cols-3 gap-10">
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-wallet text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Vue dépense globale</h3>
+      <p class="opacity-80">
+        Visualisez instantanément vos coûts mensuels et annuels.
+      </p>
+    </div>
+
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-bell text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Alertes d’échéance</h3>
+      <p class="opacity-80">
+        Recevez un rappel avant chaque renouvellement automatique.
+      </p>
+    </div>
+
+    <div class="p-6 rounded-xl border shadow-sm">
+      <i class="pi pi-chart-line text-3xl text-primary mb-4"></i>
+      <h3 class="text-xl font-semibold mb-2">Statistiques évolutives</h3>
+      <p class="opacity-80">
+        Suivez la progression de vos dépenses et optimisez votre budget.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING =================================================== -->
+<section
+  id="pricing"
+  class="bg-surface-50 dark:bg-surface-800 py-20 px-6 border-y border-surface-200 dark:border-surface-700"
+>
+  <h2 class="text-3xl font-bold mb-12 text-center">Nos tarifs</h2>
+
+  <div
+    class="flex flex-col md:flex-row justify-center gap-10 max-w-5xl mx-auto"
+  >
+    <!-- Plan Gratuit -->
+    <div class="flex-1 p-8 rounded-2xl border shadow-sm text-center">
+      <h3 class="text-xl font-semibold mb-4">Gratuit</h3>
+      <p class="text-4xl font-bold mb-2">0€</p>
+      <p class="opacity-70 mb-6">Idéal pour débuter.</p>
+      <ul class="text-left mb-8 space-y-2">
+        <li>✅ 5 abonnements</li>
+        <li>✅ Rappels de renouvellement</li>
+        <li>❌ Graphiques avancés</li>
+      </ul>
+      <button pButton label="Choisir" class="w-full"></button>
+    </div>
+
+    <!-- Plan Pro -->
+    <div
+      class="flex-1 p-8 rounded-2xl border-2 border-primary shadow-lg text-center transform md:-translate-y-4"
+    >
+      <h3 class="text-xl font-semibold mb-4">Pro</h3>
+      <p class="text-4xl font-bold mb-2">9,99€/mois</p>
+      <p class="opacity-70 mb-6">Pour les utilisateurs exigeants.</p>
+      <ul class="text-left mb-8 space-y-2">
+        <li>✅ Abonnements illimités</li>
+        <li>✅ Graphiques détaillés</li>
+        <li>✅ Support prioritaire</li>
+      </ul>
+      <button pButton label="Commencer" class="p-button-raised w-full"></button>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT =================================================== -->
+<section id="contact" class="py-20 px-6 max-w-4xl mx-auto text-center">
+  <h2 class="text-3xl font-bold mb-8">Une question ?</h2>
+  <p class="mb-6 opacity-80">L’équipe MesAbos répond sous 24 h.</p>
+
+  <!-- <p-inputTextarea
+    autoResize
+    rows="4"
+    class="w-full mb-4"
+    placeholder="Votre message"
+  ></p-inputTextarea> -->
+
+  <button pButton label="Envoyer" class="px-8 py-3"></button>
+</section>
+
+<!-- FOOTER ==================================================== -->
+<footer
+  class="bg-surface-0 dark:bg-surface-900 text-sm text-center py-6 border-t border-surface-200 dark:border-surface-700"
+>
+  © {{ currentYear }} MesAbos
+</footer>
