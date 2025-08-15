@@ -39,7 +39,7 @@ export class LoginComponent {
       await this.auth.login(this.email, this.password);
       this.router.navigate(['/dashboard']);
     } catch (err) {
-      this.error = 'Invalid credentials';
+      this.error = 'Identifiants invalides';
     }
   }
 }

@@ -38,14 +38,14 @@ export class RegisterComponent {
   async submit() {
     this.error = null;
     if (this.password !== this.confirm) {
-      this.error = 'Passwords do not match';
+      this.error = 'Les mots de passe ne correspondent pas';
       return;
     }
     try {
       await this.auth.register(this.name, this.email, this.password);
       this.router.navigate(['/login']);
     } catch {
-      this.error = 'Registration failed';
+      this.error = "Erreur lors de l'inscription";
     }
   }
 }
