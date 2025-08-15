@@ -9,14 +9,17 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const res = await this.http
-      .post<{ token: string }>('/api/auth/login', { email, password })
+      .post<{ token: string }>('http://localhost:3000/auth/login', {
+        email,
+        password,
+      })
       .toPromise();
     localStorage.setItem(this.tokenKey, res!.token);
   }
 
   async register(name: string, email: string, password: string) {
     return this.http
-      .post('/api/auth/register', { name, email, password })
+      .post('http://localhost:3000/auth/register', { name, email, password })
       .toPromise();
   }
 

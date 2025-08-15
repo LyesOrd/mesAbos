@@ -24,10 +24,19 @@ export class AuthService {
   }
 
   private verifyPassword(password: string, stored: string): boolean {
-    const [salt, key] = stored.split(':');
-    const hashedBuffer = scryptSync(password, salt, 64);
-    const keyBuffer = Buffer.from(key, 'hex');
-    return timingSafeEqual(hashedBuffer, keyBuffer);
+    if (!password || !stored) return false;
+    const parts = stored.split(':');
+    if (parts.length !== 2) return false;
+
+    const [salt, hashHex] = parts;
+    if (!salt || !hashHex) return false;
+    if (hashHex.length % 2 !== 0 || /[^0-9a-f]/i.test(hashHex)) return false;
+
+    const derived = scryptSync(password, salt, 64);
+    const storedBuf = Buffer.from(hashHex, 'hex');
+
+    if (derived.length !== storedBuf.length) return false;
+    return timingSafeEqual(derived, storedBuf);
   }
 
   private async validateUser(email: string, password: string) {
