@@ -42,11 +42,6 @@
       <div class="flex flex-col gap-2">
         <div class="flex justify-between">
           <label for="password" class="font-medium">Mot de passe</label>
-          <a
-            routerLink="/reset-password"
-            class="text-sm text-primary hover:underline"
-            >Mot de passe oublié&nbsp;?</a
-          >
         </div>
         <div class="p-inputgroup w-full">
           <span class="p-inputgroup-addon">
@@ -63,6 +58,11 @@
             required
           ></p-password>
         </div>
+        <a
+          routerLink="/reset-password"
+          class="text-sm text-primary hover:underline"
+          >Mot de passe oublié&nbsp;?</a
+        >
       </div>
 
       <button
@@ -71,6 +71,12 @@
         label="Se connecter"
         class="w-full p-button-lg mt-2"
       ></button>
+      <p class="text-surface-600 dark:text-surface-300">
+        Pas encore de compte ?
+        <a routerLink="/register" class="text-sm text-primary hover:underline"
+          >Créer un compte</a
+        >
+      </p>
     </form>
 
     <p-divider align="center">Ou continuer avec</p-divider>
@@ -82,19 +88,6 @@
         class="p-button-rounded p-button-outlined"
         icon="pi pi-google"
       ></button>
-      <button
-        pButton
-        type="button"
-        class="p-button-rounded p-button-outlined"
-        icon="pi pi-facebook"
-      ></button>
-      <button
-        pButton
-        type="button"
-        class="p-button-rounded p-button-outlined"
-        icon="pi pi-apple"
-      ></button>
     </div>
   </div>
 </section>
-
