@@ -23,7 +23,7 @@ services:
       - ./back:/app
       - /app/node_modules
     environment:
-      DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/mesabos_db"
+      DATABASE_URL: "postgresql://postgres:postgres@bdd:5432/mesabos_db?schema=public"
 
   front:
     build: ./front
