@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
@@ -9,7 +9,7 @@ import { AuthService } from '../auth.service';
   imports: [CommonModule],
   templateUrl: './dashboard.component.html',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   message = 'Bonjour !';
 
   constructor(private http: HttpClient, private auth: AuthService) {}

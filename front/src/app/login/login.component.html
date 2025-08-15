@@ -1,4 +1,4 @@
-<h2>Login</h2>
+<h2>Connexion</h2>
 <div *ngIf="error" class="error">{{ error }}</div>
 <form (ngSubmit)="submit()" #form="ngForm">
   <label>
@@ -6,7 +6,7 @@
     <input name="email" [(ngModel)]="email" required />
   </label>
   <label>
-    Password
+    Mot de passe
     <input name="password" type="password" [(ngModel)]="password" required />
   </label>
   <button type="submit">Se connecter</button>

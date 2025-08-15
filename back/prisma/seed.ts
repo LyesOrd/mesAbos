@@ -15,7 +15,7 @@ async function main() {
     update: {},
     create: {
       email: 'test2@example.com',
-      password: `${salt}.${hash}`,
+      password: `${salt}:${hash}`,
       name: 'Test User 2',
       provider: 'LOCAL',
     },
