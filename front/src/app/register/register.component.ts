@@ -7,39 +7,45 @@ import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { InputGroupModule } from 'primeng/inputgroup';
+import { CardModule } from 'primeng/card';
+import { MessageModule } from 'primeng/message';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-register',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
+    RouterLink,
     NavbarComponent,
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    DividerModule,
-    InputGroupModule,
-    RouterLink,
+    CardModule,
+    MessageModule,
   ],
-  templateUrl: './login.component.html',
+  templateUrl: './register.component.html',
 })
-export class LoginComponent {
+export class RegisterComponent {
+  name = '';
   email = '';
   password = '';
+  confirm = '';
   error: string | null = null;
 
   constructor(private auth: AuthService, private router: Router) {}
 
   async submit() {
     this.error = null;
+    if (this.password !== this.confirm) {
+      this.error = 'Les mots de passe ne correspondent pas';
+      return;
+    }
     try {
-      await this.auth.login(this.email, this.password);
-      this.router.navigate(['/dashboard']);
-    } catch (err) {
-      this.error = 'Identifiants invalides';
+      await this.auth.register(this.name, this.email, this.password);
+      this.router.navigate(['/login']);
+    } catch {
+      this.error = "Erreur lors de l'inscription";
     }
   }
 }

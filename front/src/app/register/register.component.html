@@ -1,0 +1,63 @@
+<app-navbar></app-navbar>
+<section class="flex items-center justify-center min-h-screen bg-surface-50 p-6">
+  <p-card header="Créer un compte" class="w-full max-w-md">
+    <form (ngSubmit)="submit()" #form="ngForm" class="flex flex-col gap-4">
+      <p-message *ngIf="error" severity="error" [text]="error"></p-message>
+
+      <div class="flex flex-col gap-2">
+        <label for="name" class="font-medium">Nom</label>
+        <input
+          pInputText
+          id="name"
+          name="name"
+          [(ngModel)]="name"
+          required
+          class="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="email" class="font-medium">Email</label>
+        <input
+          pInputText
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          required
+          class="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="password" class="font-medium">Mot de passe</label>
+        <p-password
+          id="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          [feedback]="false"
+          inputClass="w-full"
+        ></p-password>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="confirm" class="font-medium">Confirmer le mot de passe</label>
+        <p-password
+          id="confirm"
+          name="confirm"
+          [(ngModel)]="confirm"
+          required
+          [feedback]="false"
+          inputClass="w-full"
+        ></p-password>
+      </div>
+
+      <button pButton type="submit" label="S'inscrire" class="w-full mt-4"></button>
+      <p class="text-center text-sm">
+        Déjà un compte ?
+        <a routerLink="/login" class="text-primary underline">Se connecter</a>
+      </p>
+    </form>
+  </p-card>
+</section>

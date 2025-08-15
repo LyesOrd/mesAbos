@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { LoginDto } from './dto/login.dto';
@@ -9,6 +13,13 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async register(data: RegisterDto) {
+    const existing = await this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+    if (existing) {
+      throw new ConflictException('Email already registered');
+    }
+
     const salt = randomBytes(16).toString('hex');
     const hash = scryptSync(data.password, salt, 64).toString('hex');
     const password = `${salt}:${hash}`;
