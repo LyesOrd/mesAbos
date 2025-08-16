@@ -1,10 +1,12 @@
 import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma.service';
 import { ConflictException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService - register', () => {
   let service: AuthService;
   let prisma: { user: any };
+  let jwt: { sign: jest.Mock };
 
   beforeEach(() => {
     prisma = {
@@ -15,7 +17,11 @@ describe('AuthService - register', () => {
           .mockResolvedValue({ id: '1', email: 'test@example.com' }),
       },
     } as any;
-    service = new AuthService(prisma as unknown as PrismaService);
+    jwt = { sign: jest.fn().mockReturnValue('token') } as any;
+    service = new AuthService(
+      prisma as unknown as PrismaService,
+      jwt as unknown as JwtService,
+    );
   });
 
   it('hashes password and returns user info', async () => {

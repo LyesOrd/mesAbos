@@ -31,4 +31,26 @@ export class AuthService {
   getToken() {
     return localStorage.getItem(this.tokenKey);
   }
+
+  private isTokenExpired(token: string) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  }
+
+  isLoggedIn() {
+    const token = this.getToken();
+    if (!token || this.isTokenExpired(token)) {
+      this.logout();
+      return false;
+    }
+    return true;
+  }
+
+  logout() {
+    localStorage.removeItem(this.tokenKey);
+  }
 }

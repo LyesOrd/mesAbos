@@ -1,8 +1,8 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('dashboard')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard('jwt'))
 export class DashboardController {
   @Get()
   getDashboard(@Req() req: any) {
