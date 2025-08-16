@@ -31,4 +31,12 @@ export class AuthService {
   getToken() {
     return localStorage.getItem(this.tokenKey);
   }
+
+  isLoggedIn() {
+    return !!this.getToken();
+  }
+
+  logout() {
+    localStorage.removeItem(this.tokenKey);
+  }
 }

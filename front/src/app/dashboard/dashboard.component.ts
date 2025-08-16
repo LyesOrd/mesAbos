@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { NavbarComponent } from '../shared/navbar/navbar.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {

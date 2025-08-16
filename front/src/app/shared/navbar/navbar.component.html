@@ -16,13 +16,24 @@
       <li><a href="#contact" class="hover:text-primary">Contact</a></li>
     </ul>
 
-    <!-- Bouton connexion -->
-    <button
-      pButton
-      label="Connexion"
-      class="p-button-sm md:p-button-md"
-      routerLink="/login"
-    ></button>
+    <!-- Menu utilisateur / connexion -->
+    <div *ngIf="isLoggedIn(); else loginBtn">
+      <p-menu #userMenu [model]="userItems" [popup]="true"></p-menu>
+      <button
+        pButton
+        icon="pi pi-user"
+        class="p-button-sm md:p-button-md"
+        (click)="userMenu.toggle($event)"
+      ></button>
+    </div>
+    <ng-template #loginBtn>
+      <button
+        pButton
+        label="Connexion"
+        class="p-button-sm md:p-button-md"
+        routerLink="/login"
+      ></button>
+    </ng-template>
 
     <!-- Burger mobile -->
     <p-menubar class="md:hidden" [model]="mobileItems" #menu>

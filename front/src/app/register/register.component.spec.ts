@@ -7,10 +7,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  const authSpy = jasmine.createSpyObj('AuthService', ['register']);
+  const authSpy = jasmine.createSpyObj('AuthService', ['register', 'isLoggedIn', 'logout']);
   let router: Router;
 
   beforeEach(async () => {
+    authSpy.isLoggedIn.and.returnValue(false);
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, RouterTestingModule],
       providers: [{ provide: AuthService, useValue: authSpy }],
@@ -38,7 +39,7 @@ describe('RegisterComponent', () => {
     component.password = 'abc';
     component.confirm = 'xyz';
     await component.submit();
-    expect(component.error).toBe('Passwords do not match');
+    expect(component.error).toBe('Les mots de passe ne correspondent pas');
     expect(authSpy.register).not.toHaveBeenCalled();
   });
 });
