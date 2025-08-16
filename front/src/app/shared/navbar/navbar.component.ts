@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { Menubar, MenubarModule } from 'primeng/menubar';
-import { BadgeModule } from 'primeng/badge';
-import { FormsModule } from '@angular/forms';
+import { MenubarModule } from 'primeng/menubar';
 import { CommonModule } from '@angular/common';
-import { AvatarModule } from 'primeng/avatar';
-import { AvatarGroupModule } from 'primeng/avatargroup';
 import { ButtonModule } from 'primeng/button';
 import { StyleClassModule } from 'primeng/styleclass';
+import { MenuModule } from 'primeng/menu';
+import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -18,6 +16,7 @@ import { StyleClassModule } from 'primeng/styleclass';
     ButtonModule,
     StyleClassModule,
     MenubarModule,
+    MenuModule,
     RouterLink,
   ],
   styleUrls: ['./navbar.component.css'],
@@ -29,4 +28,20 @@ export class NavbarComponent {
     { label: 'Tarifs', url: '#pricing' },
     { label: 'Contact', url: '#contact' },
   ];
+
+  userItems = [
+    { label: 'Profil', routerLink: '/dashboard' },
+    { label: 'Déconnexion', command: () => this.logout() },
+  ];
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  isLoggedIn() {
+    return this.auth.isLoggedIn();
+  }
+
+  logout() {
+    this.auth.logout();
+    this.router.navigate(['/']);
+  }
 }
