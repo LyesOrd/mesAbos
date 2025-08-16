@@ -4,6 +4,7 @@ WORKDIR /back
 
 # 1) Installer dépendances
 COPY package.json package-lock.json ./
+RUN npm install --production
 RUN npm ci
 
 # 2) Copier le dossier prisma séparément pour optimiser le cache
