@@ -23,12 +23,21 @@ MesAbos est une application web qui permet de centraliser et suivre facilement t
    git clone <URL_DU_DEPOT>
    cd mesAbos
    ```
-2. Construire et démarrer les services Docker :
+2. Définir la clé de signature des tokens dans le fichier d'environnement du back :
+   - pour le développement : `back/.env.development`
+   - pour la production : `back/.env.production`
+
+   Exemple de génération d'un secret aléatoire pour le développement :
+   ```bash
+   printf "JWT_SECRET=%s\n" "$(openssl rand -hex 32)" > back/.env.development
+   ```
+
+3. Construire et démarrer les services Docker :
    ```bash
    make build
    make start
    ```
-3. Le front est accessible par défaut sur http://localhost:4200 et l'API sur http://localhost:3000.
+4. Le front est accessible par défaut sur http://localhost:4200 et l'API sur http://localhost:3000.
 
 ## Tests
 

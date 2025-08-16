@@ -3,14 +3,18 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma.service';
-import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
+import { randomBytes, randomUUID, scryptSync, timingSafeEqual } from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+  ) {}
 
   async register(data: RegisterDto) {
     const existing = await this.prisma.user.findUnique({
@@ -63,8 +67,11 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-    const token = randomBytes(24).toString('hex');
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1h
+    const jti = randomUUID();
+    const payload = { sub: user.id, email: user.email, jti };
+    const token = await this.jwt.signAsync(payload);
+    const { exp } = await this.jwt.verifyAsync(token);
+    const expiresAt = new Date(exp * 1000);
     await this.prisma.session.create({
       data: { userId: user.id, token, expiresAt },
     });
@@ -72,13 +79,18 @@ export class AuthService {
   }
 
   async verifyToken(token: string) {
-    const session = await this.prisma.session.findUnique({
-      where: { token },
-      include: { user: true },
-    });
-    if (!session || session.expiresAt < new Date()) {
+    try {
+      await this.jwt.verifyAsync(token);
+      const session = await this.prisma.session.findUnique({
+        where: { token },
+        include: { user: true },
+      });
+      if (!session || session.expiresAt < new Date()) {
+        throw new UnauthorizedException();
+      }
+      return session.user;
+    } catch {
       throw new UnauthorizedException();
     }
-    return session.user;
   }
 }

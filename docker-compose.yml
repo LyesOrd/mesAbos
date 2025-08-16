@@ -22,6 +22,8 @@ services:
     volumes:
       - ./back:/app
       - /app/node_modules
+    env_file:
+      - ./back/.env.development
     environment:
       DATABASE_URL: "postgresql://postgres:postgres@bdd:5432/mesabos_db?schema=public"
 
