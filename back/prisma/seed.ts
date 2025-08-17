@@ -9,7 +9,6 @@ async function main() {
   const salt = randomBytes(8).toString('hex');
   const hash = scryptSync('password1234', salt, 32).toString('hex');
 
-  // Création de l'utilisateur de test (upsert pour garder l'utilisateur ou le créer)
   const user = await prisma.user.upsert({
     where: { email: 'test2@example.com' },
     update: {},
@@ -21,121 +20,52 @@ async function main() {
     },
   });
 
-  console.log(`👤 Created user: ${user.email}`);
+  console.log(`👤 User ready: ${user.email}`);
 
-  // Nom de la catégorie et de l'abonnement à gérer
-  const categoryName = 'Streaming';
-  const subscriptionName = 'Netflix';
-
-  // Si la catégorie existe, supprimer les enregistrements liés puis la recréer
-  const existingCategory = await prisma.category.findUnique({
-    where: { name: categoryName },
-  });
-  if (existingCategory) {
-    // Supprimer les transactions liées à cette catégorie
-    await prisma.transaction.deleteMany({
-      where: { categoryId: existingCategory.id },
+  const categories = ['Streaming', 'Jeux vidéos', 'Livraisons'];
+  const catRecords: Record<string, any> = {};
+  for (const name of categories) {
+    catRecords[name] = await prisma.category.upsert({
+      where: { name },
+      update: {},
+      create: { name },
     });
+    console.log(`📂 Category ready: ${name}`);
+  }
 
-    // Récupérer les abonnements liés à cette catégorie pour supprimer leurs paiements
-    const subs = await prisma.subscription.findMany({
-      where: { categoryId: existingCategory.id },
+  const samples = [
+    { name: 'Netflix', amount: 12.99, category: 'Streaming' },
+    { name: 'Xbox Game Pass', amount: 9.99, category: 'Jeux vidéos' },
+    { name: 'Amazon Prime', amount: 5.99, category: 'Livraisons' },
+  ];
+
+  for (const s of samples) {
+    let sub = await prisma.subscription.findFirst({
+      where: { name: s.name, userId: user.id },
     });
-    for (const sub of subs) {
-      await prisma.payment.deleteMany({ where: { subscriptionId: sub.id } });
+    if (!sub) {
+      sub = await prisma.subscription.create({
+        data: {
+          name: s.name,
+          amount: s.amount,
+          frequency: 'MONTHLY',
+          startDate: new Date(),
+          userId: user.id,
+          categoryId: catRecords[s.category].id,
+        },
+      });
+      await prisma.payment.create({
+        data: {
+          subscriptionId: sub.id,
+          userId: user.id,
+          amount: s.amount,
+          paymentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+          status: 'PENDING',
+        },
+      });
     }
-
-    // Supprimer les abonnements liés
-    await prisma.subscription.deleteMany({
-      where: { categoryId: existingCategory.id },
-    });
-
-    // Supprimer la catégorie
-    await prisma.category.delete({ where: { id: existingCategory.id } });
-
-    console.log(
-      `🗑️ Deleted existing category and related records: ${categoryName}`,
-    );
+    console.log(`📅 Subscription ready: ${s.name}`);
   }
-
-  // Recréer la catégorie
-  const category = await prisma.category.create({
-    data: {
-      name: categoryName,
-    },
-  });
-
-  console.log(`📂 Created category: ${category.name}`);
-
-  // Si un abonnement du même nom et utilisateur existe, le supprimer avec ses paiements
-  const existingSubscription = await prisma.subscription.findFirst({
-    where: { name: subscriptionName, userId: user.id },
-  });
-
-  if (existingSubscription) {
-    await prisma.payment.deleteMany({
-      where: { subscriptionId: existingSubscription.id },
-    });
-    await prisma.subscription.delete({
-      where: { id: existingSubscription.id },
-    });
-    console.log(
-      `🗑️ Deleted existing subscription and related payments: ${subscriptionName}`,
-    );
-  }
-
-  // Ajout d'un abonnement Netflix
-  const subscription = await prisma.subscription.create({
-    data: {
-      name: subscriptionName,
-      amount: 12.99,
-      frequency: 'MONTHLY',
-      startDate: new Date(),
-      userId: user.id,
-      categoryId: category.id,
-    },
-  });
-
-  console.log(`📅 Created subscription: ${subscription.name}`);
-
-  // Ajout d'un paiement lié à l'abonnement
-  const payment = await prisma.payment.create({
-    data: {
-      subscriptionId: subscription.id,
-      userId: user.id,
-      amount: subscription.amount,
-      paymentDate: new Date(),
-      status: 'PAID',
-    },
-  });
-
-  console.log(`💳 Created payment: ${payment.amount}€`);
-
-  // Ajout d'un compte bancaire fictif
-  const bankAccount = await prisma.bankAccount.create({
-    data: {
-      userId: user.id,
-      provider: 'Plaid',
-      externalId: 'Boursorama',
-      balance: 500.0,
-    },
-  });
-
-  console.log(`🏦 Created bank account: ${bankAccount.provider}`);
-
-  // Ajout d'une transaction
-  await prisma.transaction.create({
-    data: {
-      userId: user.id,
-      bankAccountId: bankAccount.id,
-      description: 'Netflix Payment',
-      amount: -12.99,
-      date: new Date(),
-      categoryId: category.id,
-    },
-  });
-
-  console.log(`💰 Created transaction: Netflix -12.99€`);
 
   console.log('✅ Seeding completed!');
 }
@@ -148,3 +78,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+

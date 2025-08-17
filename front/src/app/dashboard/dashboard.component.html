@@ -1,2 +1,75 @@
 <app-navbar></app-navbar>
-<h2>{{ message }}</h2>
+
+<section class="py-8 px-6 max-w-7xl mx-auto">
+  <h2 class="text-3xl font-bold mb-8">{{ message }}</h2>
+
+  <div class="grid gap-8 md:grid-cols-3">
+    <div class="md:col-span-2">
+      <p-calendar
+        [(ngModel)]="selectedDates"
+        inline="true"
+        selectionMode="multiple"
+      ></p-calendar>
+      <ul class="mt-4 list-disc list-inside">
+        <li *ngFor="let p of upcomingPayments">
+          {{ p.name }} - {{ p.date | date }}
+        </li>
+      </ul>
+    </div>
+    <div class="p-4 rounded-xl border shadow-sm">
+      <div #radarChart class="w-full h-72"></div>
+    </div>
+  </div>
+
+  <div class="mt-12 p-6 rounded-xl border shadow-sm">
+    <h3 class="text-xl font-semibold mb-4">Ajouter un abonnement</h3>
+    <form class="grid gap-4 md:grid-cols-2" (ngSubmit)="submit()" #form="ngForm">
+      <input
+        pInputText
+        type="text"
+        name="name"
+        [(ngModel)]="subscriptionForm.name"
+        placeholder="Nom"
+        required
+        class="md:col-span-2"
+      />
+
+      <p-inputNumber
+        name="amount"
+        [(ngModel)]="subscriptionForm.amount"
+        mode="decimal"
+        [useGrouping]="false"
+        placeholder="Montant"
+      ></p-inputNumber>
+
+      <p-dropdown
+        [options]="frequencies"
+        name="frequency"
+        [(ngModel)]="subscriptionForm.frequency"
+      ></p-dropdown>
+
+      <p-calendar
+        name="startDate"
+        [(ngModel)]="subscriptionForm.startDate"
+        dateFormat="yy-mm-dd"
+      ></p-calendar>
+
+      <p-dropdown
+        [options]="categories"
+        name="category"
+        [(ngModel)]="subscriptionForm.category"
+        placeholder="Catégorie"
+        class="md:col-span-2"
+      ></p-dropdown>
+
+      <button
+        pButton
+        type="submit"
+        label="Ajouter"
+        class="md:col-span-2"
+        [disabled]="form.invalid"
+      ></button>
+    </form>
+  </div>
+</section>
+
