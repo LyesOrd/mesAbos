@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -9,6 +9,9 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { InputGroupModule } from 'primeng/inputgroup';
+import { environment } from '../../environments/environment';
+
+declare const google: any;
 
 @Component({
   selector: 'app-login',
@@ -26,12 +29,35 @@ import { InputGroupModule } from 'primeng/inputgroup';
   ],
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent implements AfterViewInit {
   email = '';
   password = '';
   error: string | null = null;
 
   constructor(private auth: AuthService, private router: Router) {}
+
+  ngAfterViewInit() {
+    google.accounts.id.initialize({
+      client_id: environment.googleClientId,
+      callback: (res: any) => this.handleGoogle(res),
+    });
+    const btn = document.getElementById('googleBtn');
+    if (btn) {
+      google.accounts.id.renderButton(btn, {
+        theme: 'outline',
+        size: 'large',
+      });
+    }
+  }
+
+  private async handleGoogle(response: any) {
+    try {
+      await this.auth.googleLogin(response.credential);
+      this.router.navigate(['/dashboard']);
+    } catch (err) {
+      this.error = 'Connexion Google échouée';
+    }
+  }
 
   async submit() {
     this.error = null;

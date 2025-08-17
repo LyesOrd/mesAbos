@@ -18,6 +18,15 @@ export class AuthService {
     localStorage.setItem(this.tokenKey, res!.token);
   }
 
+  async googleLogin(token: string) {
+    const res = await firstValueFrom(
+      this.http.post<{ token: string }>('http://localhost:3000/auth/google', {
+        token,
+      })
+    );
+    localStorage.setItem(this.tokenKey, res!.token);
+  }
+
   async register(name: string, email: string, password: string) {
     return firstValueFrom(
       this.http.post('http://localhost:3000/auth/register', {
