@@ -80,6 +80,11 @@ web_modules/
 .env.development
 .env.prod
 .env.local
+# Angular env files
+**/src/environments/*.ts
+
+# garde un exemple versionné si tu veux
+!**/src/environments/environment.local.example.ts
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
