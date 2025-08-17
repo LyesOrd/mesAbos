@@ -9,11 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { FullCalendarModule } from '@fullcalendar/angular';
-import dayGridPlugin from '@fullcalendar/daygrid';
 import * as echarts from 'echarts';
-
-FullCalendarModule.registerPlugins([dayGridPlugin]);
 
 @Component({
   selector: 'app-dashboard',
@@ -26,7 +22,6 @@ FullCalendarModule.registerPlugins([dayGridPlugin]);
     InputTextModule,
     DropdownModule,
     ButtonModule,
-    FullCalendarModule,
     InputNumberModule,
   ],
   templateUrl: './dashboard.component.html',
@@ -35,14 +30,12 @@ FullCalendarModule.registerPlugins([dayGridPlugin]);
 export class DashboardComponent implements OnInit, AfterViewInit {
   message = 'Bonjour !';
 
-  calendarOptions: any = {
-    initialView: 'dayGridMonth',
-    events: [],
-  };
-
   @ViewChild('radarChart') radarChartRef!: ElementRef;
   radarInstance?: echarts.ECharts;
   radarOptions: echarts.EChartsOption = {};
+  upcomingPayments: { name: string; date: string }[] = [];
+  selectedDates: Date[] = [];
+  private apiUrl = 'http://localhost:3000';
 
   categories = [
     { label: 'Streaming', value: 'Streaming' },
@@ -67,7 +60,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     const token = this.auth.getToken();
     this.http
-      .get<{ message: string }>('/dashboard', {
+      .get<{ message: string }>(`${this.apiUrl}/dashboard`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe((res) => (this.message = res.message));
@@ -86,21 +79,22 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   loadUpcoming() {
     const token = this.auth.getToken();
     this.http
-      .get<any[]>('/dashboard/upcoming-payments', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get<{ name: string; date: string }[]>(
+        `${this.apiUrl}/dashboard/upcoming-payments`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .subscribe((events) => {
-        this.calendarOptions = {
-          ...this.calendarOptions,
-          events: events.map((e) => ({ title: e.name, date: e.date })),
-        };
+        this.upcomingPayments = events;
+        this.selectedDates = events.map((e) => new Date(e.date));
       });
   }
 
   loadStats() {
     const token = this.auth.getToken();
     this.http
-      .get<Record<string, number>>('/dashboard/category-stats', {
+      .get<Record<string, number>>(`${this.apiUrl}/dashboard/category-stats`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe((stats) => {
@@ -108,18 +102,20 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const data = labels.map((l) => stats[l] || 0);
         const maxVal = Math.max(...data, 1);
         this.radarOptions = {
-          legend: { bottom: 0 },
+          title: { text: 'Basic Radar Chart' },
+          legend: { data: ['Subscriptions'] },
           tooltip: {},
           radar: {
             indicator: labels.map((name) => ({ name, max: maxVal })),
           },
           series: [
             {
+              name: 'Subscriptions',
               type: 'radar',
               data: [
                 {
                   value: data,
-                  name: 'Abonnements',
+                  name: 'Subscriptions',
                 },
               ],
             },
@@ -135,7 +131,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     const token = this.auth.getToken();
     const body = { ...this.subscriptionForm };
     this.http
-      .post('/subscriptions', body, {
+      .post(`${this.apiUrl}/subscriptions`, body, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe(() => {

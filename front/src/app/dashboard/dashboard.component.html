@@ -5,7 +5,16 @@
 
   <div class="grid gap-8 md:grid-cols-3">
     <div class="md:col-span-2">
-      <full-calendar [options]="calendarOptions"></full-calendar>
+      <p-calendar
+        [(ngModel)]="selectedDates"
+        inline="true"
+        selectionMode="multiple"
+      ></p-calendar>
+      <ul class="mt-4 list-disc list-inside">
+        <li *ngFor="let p of upcomingPayments">
+          {{ p.name }} - {{ p.date | date }}
+        </li>
+      </ul>
     </div>
     <div class="p-4 rounded-xl border shadow-sm">
       <div #radarChart class="w-full h-72"></div>
