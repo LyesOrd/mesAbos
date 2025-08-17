@@ -1,4 +1,10 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  AfterViewInit,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -102,7 +108,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         const data = labels.map((l) => stats[l] || 0);
         const maxVal = Math.max(...data, 1);
         this.radarOptions = {
-          title: { text: 'Basic Radar Chart' },
+          title: { text: 'Répartition des abonnements' },
           legend: { data: ['Subscriptions'] },
           tooltip: {},
           radar: {
@@ -110,12 +116,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           },
           series: [
             {
-              name: 'Subscriptions',
+              name: 'Streaming',
               type: 'radar',
               data: [
                 {
                   value: data,
-                  name: 'Subscriptions',
+                  name: 'Streaming',
                 },
               ],
             },
@@ -147,4 +153,3 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
   }
 }
-
