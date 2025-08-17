@@ -73,4 +73,45 @@ export class AuthService {
     });
     return { token };
   }
+
+  async googleLogin(token: string) {
+    const res = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
+    );
+    if (!res.ok) {
+      throw new UnauthorizedException();
+    }
+    const payload: any = await res.json();
+    if (payload.aud !== process.env.GOOGLE_CLIENT_ID) {
+      throw new UnauthorizedException();
+    }
+    let user = await this.prisma.user.findUnique({
+      where: { providerId: payload.sub },
+    });
+    if (!user) {
+      const existing = payload.email
+        ? await this.prisma.user.findUnique({ where: { email: payload.email } })
+        : null;
+      if (!existing) {
+        user = await this.prisma.user.create({
+          data: {
+            email: payload.email,
+            name: payload.name || payload.email,
+            provider: 'GOOGLE',
+            providerId: payload.sub,
+          },
+        });
+      } else {
+        user = await this.prisma.user.update({
+          where: { id: existing.id },
+          data: { provider: 'GOOGLE', providerId: payload.sub },
+        });
+      }
+    }
+    const jwtPayload = { sub: user.id, email: user.email, name: user.name };
+    const jwtToken = this.jwt.sign(jwtPayload, {
+      expiresIn: process.env.JWT_EXPIRES_IN || '15min',
+    });
+    return { token: jwtToken };
+  }
 }
