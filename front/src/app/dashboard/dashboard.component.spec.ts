@@ -27,10 +27,17 @@ describe('DashboardComponent', () => {
   it('should load stats into radar options', () => {
     component.loadStats();
     const req = httpMock.expectOne('http://localhost:3000/dashboard/category-stats');
-    req.flush({ Streaming: 2, 'Jeux vidéos': 1, Livraisons: 3 });
+    req.flush({
+      Streaming: 2,
+      'Jeux vidéos': 1,
+      Livraisons: 3,
+      Musique: 4,
+      Sport: 2,
+      Hobbies: 1,
+    });
     const series = (component.radarOptions.series as any[])[0];
     expect(series.type).toBe('radar');
-    expect(series.data[0].value).toEqual([2, 1, 3]);
+    expect(series.data[0].value).toEqual([2, 1, 3, 4, 2, 1]);
   });
 
   it('should populate upcoming payments', () => {

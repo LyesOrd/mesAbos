@@ -47,6 +47,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     { label: 'Streaming', value: 'Streaming' },
     { label: 'Jeux vidéos', value: 'Jeux vidéos' },
     { label: 'Livraisons', value: 'Livraisons' },
+    { label: 'Musique', value: 'Musique' },
+    { label: 'Sport', value: 'Sport' },
+    { label: 'Hobbies', value: 'Hobbies' },
   ];
   frequencies = [
     { label: 'Mensuel', value: 'MONTHLY' },
