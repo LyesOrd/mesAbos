@@ -22,7 +22,7 @@ async function main() {
 
   console.log(`👤 User ready: ${user.email}`);
 
-  const categories = ['Streaming', 'Jeux vidéos', 'Livraisons'];
+  const categories = ['Streaming', 'Jeux vidéos', 'Livraisons', 'Musique', 'Sport', 'Hobbies'];
   const catRecords: Record<string, any> = {};
   for (const name of categories) {
     catRecords[name] = await prisma.category.upsert({
@@ -37,6 +37,9 @@ async function main() {
     { name: 'Netflix', amount: 12.99, category: 'Streaming' },
     { name: 'Xbox Game Pass', amount: 9.99, category: 'Jeux vidéos' },
     { name: 'Amazon Prime', amount: 5.99, category: 'Livraisons' },
+    { name: 'Spotify', amount: 9.99, category: 'Musique' },
+    { name: 'Gym Membership', amount: 29.99, category: 'Sport' },
+    { name: 'Photography Club', amount: 15.0, category: 'Hobbies' },
   ];
 
   for (const s of samples) {
