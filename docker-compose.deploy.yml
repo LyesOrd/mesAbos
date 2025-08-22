@@ -1,0 +1,35 @@
+services:
+  bdd:
+    image: postgres:15-alpine
+    container_name: mesabos_bdd
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mesabos_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  back:
+    image: ${REGISTRY}/mesabos-back:${TAG}
+    container_name: mesabos_back
+    depends_on:
+      - bdd
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@bdd:5432/mesabos_db?schema=public"
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+  front:
+    image: ${REGISTRY}/mesabos-front:${TAG}
+    container_name: mesabos_front
+    depends_on:
+      - back
+    ports:
+      - "4200:4200"
+
+volumes:
+  postgres_data:
