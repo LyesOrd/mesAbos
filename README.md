@@ -59,6 +59,22 @@ Ce dépôt utilise GitHub Actions pour automatiser les tests et la livraison :
 - Les images Docker des deux parties sont construites et publiées sur le GitHub Container Registry.
 - Le workflow `Deploy` permet de déployer n'importe quel tag via SSH grâce au script `scripts/deploy.sh`, qui utilise `docker-compose.deploy.yml`. Pour revenir à une version précédente, relancez le déploiement avec le tag souhaité.
 
+## Versioning
+
+Ce projet utilise [semantic-release](https://semantic-release.gitbook.io/semantic-release/) pour gérer automatiquement les versions et les releases GitHub. Chaque push sur la branche `master` déclenche une analyse des messages de commit pour déterminer le type de version à publier :
+
+- `fix:` → incrémentation de la version *patch*.
+- `feat:` → incrémentation de la version *minor*.
+- `feat!` ou `BREAKING CHANGE:` → incrémentation de la version *major*.
+
+Lorsqu'une release est générée, le fichier `CHANGELOG.md` et la version dans `package.json` sont mis à jour, un tag Git est créé et une release GitHub est publiée.
+
+Exécutez manuellement une release locale si besoin :
+
+```bash
+npm run release
+```
+
 ## Licence
 
 Ce projet est distribué sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus d'informations.
