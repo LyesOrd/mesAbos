@@ -7,10 +7,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
-  const authSpy = jasmine.createSpyObj('AuthService', ['register', 'isLoggedIn', 'logout']);
+  let authSpy: jasmine.SpyObj<AuthService>;
   let router: Router;
 
   beforeEach(async () => {
+    authSpy = jasmine.createSpyObj('AuthService', ['register', 'isLoggedIn', 'logout']);
     authSpy.isLoggedIn.and.returnValue(false);
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, RouterTestingModule],
