@@ -52,6 +52,13 @@ cd ../back
 npm test
 ```
 
+## CI/CD
+
+Ce dépôt utilise GitHub Actions pour automatiser les tests et la livraison :
+- Chaque push ou pull request déclenche les tests unitaires du back et du front.
+- Les images Docker des deux parties sont construites et publiées sur le GitHub Container Registry.
+- Le workflow `Deploy` permet de déployer n'importe quel tag via SSH grâce au script `scripts/deploy.sh`, qui utilise `docker-compose.deploy.yml`. Pour revenir à une version précédente, relancez le déploiement avec le tag souhaité.
+
 ## Licence
 
 Ce projet est distribué sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus d'informations.
