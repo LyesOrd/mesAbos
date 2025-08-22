@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from './navbar.component';
 import { AuthService } from '../../auth.service';
-import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -11,11 +11,8 @@ describe('NavbarComponent', () => {
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['isLoggedIn', 'logout']);
     await TestBed.configureTestingModule({
-      imports: [NavbarComponent],
-      providers: [
-        { provide: AuthService, useValue: authSpy },
-        { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate']) },
-      ],
+      imports: [RouterTestingModule, NavbarComponent],
+      providers: [{ provide: AuthService, useValue: authSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);
