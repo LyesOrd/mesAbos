@@ -52,12 +52,25 @@ cd ../back
 npm test
 ```
 
+## Modèle de branches
+
+Le cycle de développement suit ce flux :
+
+1. Chaque fonctionnalité est développée sur une branche `feature/*`.
+2. Les contributions sont fusionnées dans `develop` pour l'intégration continue.
+3. Une branche `release-candidate` sert à la stabilisation avant publication.
+4. Une fois validée, `release-candidate` est fusionnée dans `master`.
+
 ## CI/CD
 
-Ce dépôt utilise GitHub Actions pour automatiser les tests et la livraison :
-- Chaque push ou pull request déclenche les tests unitaires du back et du front.
-- Les images Docker des deux parties sont construites et publiées sur le GitHub Container Registry.
-- Le workflow `Deploy` permet de déployer n'importe quel tag via SSH grâce au script `scripts/deploy.sh`, qui utilise `docker-compose.deploy.yml`. Pour revenir à une version précédente, relancez le déploiement avec le tag souhaité.
+Ce dépôt utilise GitHub Actions pour automatiser tests et images :
+
+- Sur chaque push ou pull request, la CI exécute `npm test` sur le front et le back.
+- Les images Docker `mesabos-front` et `mesabos-back` sont construites puis poussées vers le GitHub Container Registry.
+- Les déploiements sont déclenchés automatiquement :
+  - Un push sur `develop` déploie vers l'environnement dev.
+  - Un push sur `release-candidate` déploie vers l'environnement QAT.
+  - Une fusion dans `master` ou un tag déclenche le déploiement de production via le workflow `Deploy` (`scripts/deploy.sh`).
 
 ## Versioning
 
