@@ -52,5 +52,5 @@ jobs:
           username: ${{ secrets.PROD_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            TAG=$TAG REGISTRY=${{ secrets.PROD_REGISTRY }} ENV=prod ./scripts/deploy.sh
+            TAG=${{ env.TAG }} REGISTRY=${{ secrets.PROD_REGISTRY }} ENV=prod ./scripts/deploy.sh
 
