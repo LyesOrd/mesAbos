@@ -2,24 +2,77 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - develop
+      - 'feature/**'
   pull_request:
-    branches: [main]
+    branches:
+      - develop
 
 jobs:
-  build:
+  frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set lowercase owner
         run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: front/package-lock.json
+      - name: Install dependencies
+        working-directory: front
+        run: npm ci
+      - name: Run unit tests
+        working-directory: front
+        run: npm test
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./front
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER }}/mesabos-front:latest
+            ghcr.io/${{ env.OWNER }}/mesabos-front:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/mesabos-front:${{ env.BRANCH_NAME }}
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set lowercase owner
+        run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: back/package-lock.json
+      - name: Install dependencies
+        working-directory: back
+        run: npm ci
+      - name: Run unit tests
+        working-directory: back
+        run: npm test
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: ./back
@@ -27,3 +80,4 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER }}/mesabos-back:latest
             ghcr.io/${{ env.OWNER }}/mesabos-back:${{ github.sha }}
+            ghcr.io/${{ env.OWNER }}/mesabos-back:${{ env.BRANCH_NAME }}
