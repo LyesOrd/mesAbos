@@ -20,10 +20,6 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: |
-          if [ "${GITHUB_REF}" = "refs/heads/develop" ]; then
-            npm run release -- --prerelease rc
-          else
-            npm run release
-          fi
+          npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
