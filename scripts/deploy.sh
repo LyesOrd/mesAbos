@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TAG=${TAG:-latest}
+TAG=${1:-${TAG:-latest}}
 REGISTRY=${REGISTRY:-ghcr.io/your-org}
 
 export TAG REGISTRY
 
-echo "Deploying images ${REGISTRY}/mesabos-*:${TAG}"
+echo "Deploying images ${REGISTRY}/mesabos-back:${TAG} and ${REGISTRY}/mesabos-front:${TAG}"
 
-docker compose -f docker-compose.deploy.yml pull
+docker compose -f docker-compose.deploy.yml pull back front
 
-docker compose -f docker-compose.deploy.yml up -d
+docker compose -f docker-compose.deploy.yml up -d back front

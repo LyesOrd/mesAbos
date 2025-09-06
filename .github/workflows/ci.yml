@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  build-back:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +19,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
+      - name: Build and push back
         uses: docker/build-push-action@v5
         with:
           context: ./back
@@ -27,3 +27,26 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER }}/mesabos-back:latest
             ghcr.io/${{ env.OWNER }}/mesabos-back:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.OWNER }}/mesabos-back:latest
+
+  build-front:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set lowercase owner
+        run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push front
+        uses: docker/build-push-action@v5
+        with:
+          context: ./front
+          push: true
+          tags: |
+            ghcr.io/${{ env.OWNER }}/mesabos-front:latest
+            ghcr.io/${{ env.OWNER }}/mesabos-front:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ env.OWNER }}/mesabos-front:latest
