@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/LyesOrd/mesAbos/compare/v1.0.0...v1.1.0) (2025-09-06)
+
+
+### Features
+
+* **ci:** add front and back jobs with caching and branch tags ([#39](https://github.com/LyesOrd/mesAbos/issues/39)) ([59b772b](https://github.com/LyesOrd/mesAbos/commit/59b772b1f50bbd797b8ce32870e9aa4ca0ea79f6))
+
 # 1.0.0 (2025-08-22)
 
 
