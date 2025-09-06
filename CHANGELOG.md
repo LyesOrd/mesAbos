@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/LyesOrd/mesAbos/compare/v1.1.0...v1.2.0) (2025-09-06)
+
+
+### Features
+
+* update backend volume mount ([#42](https://github.com/LyesOrd/mesAbos/issues/42)) ([1458942](https://github.com/LyesOrd/mesAbos/commit/1458942bbc1ba1c212736018a32fa60eb25adcb0))
+
 # [1.1.0](https://github.com/LyesOrd/mesAbos/compare/v1.0.0...v1.1.0) (2025-09-06)
 
 
