@@ -52,14 +52,14 @@ cd ../back
 npm test
 ```
 
-## Modèle de branches
+## Branching Model
 
-Le cycle de développement suit ce flux :
+The development cycle follows this workflow:
 
-1. Chaque fonctionnalité est développée sur une branche `feature/*`.
-2. Les contributions sont fusionnées dans `develop` pour l'intégration continue.
-3. Une branche `release-candidate` sert à la stabilisation avant publication.
-4. Une fois validée, `release-candidate` est fusionnée dans `master`.
+1. Each feature is developed on a `feature/*` branch.
+2. Contributions are merged into `develop` for continuous integration.
+3. A `release-candidate` branch is used for stabilization before release.
+4. Once validated, `release-candidate` is merged into `master`.
 
 ## CI/CD
 
