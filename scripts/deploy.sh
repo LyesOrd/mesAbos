@@ -1,13 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TAG=${TAG:-latest}
+ENV=${ENV:-${1:-}}
+if [[ -z "$ENV" ]]; then
+  echo "Usage: $0 ENV" >&2
+  exit 1
+fi
+
+case "$ENV" in
+  develop|qa|prod)
+    ;;
+  *)
+    echo "Unknown environment: $ENV" >&2
+    exit 1
+    ;;
+esac
+
+TAG=${TAG:-$ENV}
 REGISTRY=${REGISTRY:-ghcr.io/your-org}
 
-export TAG REGISTRY
+COMPOSE_FILE="docker-compose.deploy.yml"
+if [[ -f "docker-compose.deploy.${ENV}.yml" ]]; then
+  COMPOSE_FILE="docker-compose.deploy.${ENV}.yml"
+fi
 
-echo "Deploying images ${REGISTRY}/mesabos-*:${TAG}"
+export TAG REGISTRY ENV
 
-docker compose -f docker-compose.deploy.yml pull
+echo "Deploying ${ENV} with images ${REGISTRY}/mesabos-*:${TAG}"
 
-docker compose -f docker-compose.deploy.yml up -d
+docker compose -f "${COMPOSE_FILE}" pull
+
+docker compose -f "${COMPOSE_FILE}" up -d

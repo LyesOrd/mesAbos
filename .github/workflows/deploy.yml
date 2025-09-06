@@ -1,23 +1,56 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Image tag to deploy
-        default: latest
-        required: true
+  push:
+    branches:
+      - develop
+      - qa
+      - prod
+  release:
+    types: [released]
 
 jobs:
-  deploy:
+  deploy-develop:
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy over SSH
+      - name: Deploy to develop
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USER }}
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            TAG=${{ github.event.inputs.tag }} REGISTRY=${{ secrets.DEPLOY_REGISTRY }} ./scripts/deploy.sh
+            TAG=develop REGISTRY=${{ secrets.DEV_REGISTRY }} ENV=develop ./scripts/deploy.sh
+
+  deploy-qa:
+    if: github.ref == 'refs/heads/qa' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to qa
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.QA_HOST }}
+          username: ${{ secrets.QA_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            TAG=qa REGISTRY=${{ secrets.QA_REGISTRY }} ENV=qa ./scripts/deploy.sh
+
+  deploy-prod:
+    if: (github.ref == 'refs/heads/prod' && github.event_name == 'push') || github.event_name == 'release'
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || 'prod' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to prod
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            TAG=$TAG REGISTRY=${{ secrets.PROD_REGISTRY }} ENV=prod ./scripts/deploy.sh
+
