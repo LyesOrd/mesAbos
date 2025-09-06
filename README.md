@@ -61,7 +61,10 @@ Ce dépôt utilise GitHub Actions pour automatiser les tests et la livraison :
 
 ## Versioning
 
-Ce projet utilise [semantic-release](https://semantic-release.gitbook.io/semantic-release/) pour gérer automatiquement les versions et les releases GitHub. Chaque push sur la branche `master` déclenche une analyse des messages de commit pour déterminer le type de version à publier :
+Ce projet utilise [semantic-release](https://semantic-release.gitbook.io/semantic-release/) pour gérer automatiquement les versions et les releases GitHub. Chaque push sur la branche `master` déclenche une release stable, tandis qu'un push sur la branche `develop` produit une pré-release suffixée `rc`. Le type de version publié est déterminé par l'analyse des messages de commit :
+
+- `develop` → pré-release `rc`
+- `master` → release stable
 
 - `fix:` → incrémentation de la version *patch*.
 - `feat:` → incrémentation de la version *minor*.

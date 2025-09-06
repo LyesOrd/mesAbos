@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   release:
@@ -18,6 +19,7 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run release
+      - run: |
+          npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
