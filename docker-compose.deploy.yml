@@ -15,6 +15,7 @@ services:
   back:
     image: ${REGISTRY}/mesabos-back:${TAG}
     container_name: mesabos_back
+    pull_policy: always
     depends_on:
       - bdd
     environment:
@@ -26,6 +27,7 @@ services:
   front:
     image: ${REGISTRY}/mesabos-front:${TAG}
     container_name: mesabos_front
+    pull_policy: always
     depends_on:
       - back
     ports:
