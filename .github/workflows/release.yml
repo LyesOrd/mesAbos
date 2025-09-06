@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - master
+      - develop
 
 jobs:
   release:
@@ -18,6 +19,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run release
+      - run: |
+          if [ "${GITHUB_REF}" = "refs/heads/develop" ]; then
+            npm run release -- --prerelease rc
+          else
+            npm run release
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
