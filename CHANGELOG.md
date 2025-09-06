@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/LyesOrd/mesAbos/compare/v1.3.0...v1.4.0) (2025-09-06)
+
+
+### Features
+
+* document branching and deployment workflow ([#43](https://github.com/LyesOrd/mesAbos/issues/43)) ([9ad3f1c](https://github.com/LyesOrd/mesAbos/commit/9ad3f1ccd0431e61fcbb9758679b7b8c04a0d2a5))
+
 # [1.3.0](https://github.com/LyesOrd/mesAbos/compare/v1.2.0...v1.3.0) (2025-09-06)
 
 
