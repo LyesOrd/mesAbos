@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/LyesOrd/mesAbos/compare/v1.2.0...v1.3.0) (2025-09-06)
+
+
+### Features
+
+* add branch-specific deployment jobs ([#41](https://github.com/LyesOrd/mesAbos/issues/41)) ([cc796ed](https://github.com/LyesOrd/mesAbos/commit/cc796eddc7009c7e83bad58d645b58286ecde308))
+
 # [1.2.0](https://github.com/LyesOrd/mesAbos/compare/v1.1.0...v1.2.0) (2025-09-06)
 
 
