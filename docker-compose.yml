@@ -20,7 +20,7 @@ services:
     depends_on:
       - bdd
     volumes:
-      - ./back:/back
+      # - ./back:/back
       - /back/node_modules
     env_file:
       - ./back/.env.development
