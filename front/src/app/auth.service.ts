@@ -2,6 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string | null;
+  avatarUrl?: string | null;
+  provider?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private tokenKey = 'token';
@@ -34,6 +44,18 @@ export class AuthService {
         email,
         password,
       })
+    );
+  }
+
+  async getProfile() {
+    return firstValueFrom(
+      this.http.get<UserProfile>('http://localhost:3000/users/me')
+    );
+  }
+
+  async updateProfile(data: FormData) {
+    return firstValueFrom(
+      this.http.patch<UserProfile>('http://localhost:3000/users/me', data)
     );
   }
 

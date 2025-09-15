@@ -37,7 +37,7 @@ describe('NavbarComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Connexion');
   });
 
-  it('provides dashboard access through the user menu when authenticated', () => {
+  it('provides dashboard and profile access through the user menu when authenticated', () => {
     auth.isLoggedIn.and.returnValue(true);
     fixture.detectChanges();
     const dashboardItem = component.userItems.find(
@@ -45,5 +45,10 @@ describe('NavbarComponent', () => {
     );
     expect(dashboardItem).toBeTruthy();
     expect(dashboardItem?.routerLink).toBe('/dashboard');
+    const profileItem = component.userItems.find(
+      (item) => item.label === 'Profil'
+    );
+    expect(profileItem).toBeTruthy();
+    expect(profileItem?.routerLink).toBe('/profile');
   });
 });
