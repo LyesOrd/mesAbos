@@ -1,3 +1,10 @@
+# [1.5.0-rc.7](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.6...v1.5.0-rc.7) (2025-09-15)
+
+
+### Features
+
+* add profile navigation and avatar support ([#62](https://github.com/LyesOrd/mesAbos/issues/62)) ([e8001fc](https://github.com/LyesOrd/mesAbos/commit/e8001fce058bb6754f26b1e972e6f06da5b60623))
+
 # [1.5.0-rc.6](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.5...v1.5.0-rc.6) (2025-09-15)
 
 
