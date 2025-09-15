@@ -53,6 +53,8 @@ model Subscription {
   frequency  Frequency // Mensuel ou Annuel
   startDate  DateTime
   endDate    DateTime?
+  currency   String    @default("EUR")
+  notes      String?
   userId     String
   categoryId String?
 
