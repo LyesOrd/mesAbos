@@ -36,4 +36,14 @@ describe('NavbarComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).not.toContain('Connexion');
   });
+
+  it('provides dashboard access through the user menu when authenticated', () => {
+    auth.isLoggedIn.and.returnValue(true);
+    fixture.detectChanges();
+    const dashboardItem = component.userItems.find(
+      (item) => item.label === 'Dashboard'
+    );
+    expect(dashboardItem).toBeTruthy();
+    expect(dashboardItem?.routerLink).toBe('/dashboard');
+  });
 });
