@@ -1,3 +1,10 @@
+## [1.4.1-rc.2](https://github.com/LyesOrd/mesAbos/compare/v1.4.1-rc.1...v1.4.1-rc.2) (2025-09-15)
+
+
+### Bug Fixes
+
+* sync package lock back ([97f3369](https://github.com/LyesOrd/mesAbos/commit/97f3369b2b30e91e391d98addc98e7fa6f389c66))
+
 ## [1.4.1-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.4.1-rc.1) (2025-09-14)
 
 
