@@ -17,23 +17,41 @@
     </ul>
 
     <!-- Menu utilisateur / connexion -->
-    <div *ngIf="isLoggedIn(); else loginBtn">
-      <p-menu #userMenu [model]="userItems" [popup]="true"></p-menu>
-      <button
-        pButton
-        icon="pi pi-user"
-        class="p-button-sm md:p-button-md"
-        (click)="userMenu.toggle($event)"
-      ></button>
-    </div>
-    <ng-template #loginBtn>
+    @if (isLoggedIn()) {
+      <div class="flex items-center gap-3">
+        <p-menu #userMenu [model]="userItems" [popup]="true"></p-menu>
+        <a
+          routerLink="/profile"
+          class="inline-flex h-10 w-10 overflow-hidden rounded-full border border-surface-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+          [attr.aria-label]="'Ouvrir le profil de ' + profileLabel()"
+          [attr.title]="profileLabel()"
+        >
+          <img
+            [ngSrc]="avatarUrl()"
+            [attr.alt]="avatarAlt()"
+            width="40"
+            height="40"
+            class="h-full w-full object-cover"
+            priority
+          />
+        </a>
+        <button
+          pButton
+          type="button"
+          icon="pi pi-ellipsis-v"
+          class="p-button-text p-button-sm md:p-button-md"
+          (click)="userMenu.toggle($event)"
+          aria-label="Ouvrir le menu utilisateur"
+        ></button>
+      </div>
+    } @else {
       <button
         pButton
         label="Connexion"
         class="p-button-sm md:p-button-md"
         routerLink="/login"
       ></button>
-    </ng-template>
+    }
 
     <!-- Burger mobile -->
     <p-menubar class="md:hidden" [model]="mobileItems" #menu>

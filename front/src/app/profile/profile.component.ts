@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
   FormControl,
@@ -63,8 +64,8 @@ export class ProfileComponent implements OnInit {
 
   private previewObjectUrl: string | null = null;
 
-  readonly displayAvatar = computed(() =>
-    this.avatarPreview() ?? this.profile()?.avatarUrl ?? null
+  readonly displayAvatar = computed(
+    () => this.avatarPreview() ?? this.profile()?.avatarUrl ?? null
   );
 
   readonly disableSubmit = computed(
@@ -117,22 +118,27 @@ export class ProfileComponent implements OnInit {
     }
   }
 
-  async loadProfile() {
+  loadProfile() {
     this.loading.set(true);
     this.errorMessage.set(null);
 
-    try {
-      const profile = await this.auth.getProfile();
-      this.profile.set(profile);
-      this.profileForm.patchValue({
-        name: profile.name ?? '',
-        avatar: null,
+    this.auth
+      .getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.profileForm.patchValue({
+            name: profile?.name ?? '',
+            avatar: null,
+          });
+          this.loading.set(false);
+        },
+        error: () => {
+          this.errorMessage.set('Impossible de charger votre profil.');
+          this.loading.set(false);
+        },
       });
-    } catch {
-      this.errorMessage.set("Impossible de charger votre profil.");
-    } finally {
-      this.loading.set(false);
-    }
   }
 
   onAvatarSelected(event: Event) {

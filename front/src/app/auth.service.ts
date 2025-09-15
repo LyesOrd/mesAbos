@@ -1,12 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, catchError, defer, firstValueFrom, map, of } from 'rxjs';
+
+interface UserProfileResponse {
+  id: string;
+  email: string;
+  name: string | null;
+  avatar?: string | null;
+  provider?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 export interface UserProfile {
   id: string;
   email: string;
   name: string | null;
-  avatarUrl?: string | null;
+  avatarUrl: string;
   provider?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -14,9 +24,8 @@ export interface UserProfile {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private tokenKey = 'token';
-
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly tokenKey = 'token';
 
   async login(email: string, password: string) {
     const res = await firstValueFrom(
@@ -25,7 +34,7 @@ export class AuthService {
         password,
       })
     );
-    localStorage.setItem(this.tokenKey, res!.token);
+    localStorage.setItem(this.tokenKey, res.token);
   }
 
   async googleLogin(token: string) {
@@ -34,7 +43,7 @@ export class AuthService {
         token,
       })
     );
-    localStorage.setItem(this.tokenKey, res!.token);
+    localStorage.setItem(this.tokenKey, res.token);
   }
 
   async register(name: string, email: string, password: string) {
@@ -44,12 +53,6 @@ export class AuthService {
         email,
         password,
       })
-    );
-  }
-
-  async getProfile() {
-    return firstValueFrom(
-      this.http.get<UserProfile>('http://localhost:3000/users/me')
     );
   }
 
@@ -83,5 +86,36 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.tokenKey);
+  }
+
+  getProfile(): Observable<UserProfile | null> {
+    return defer(() => {
+      if (!this.isLoggedIn()) {
+        return of(null);
+      }
+
+      return this.http
+        .get<UserProfileResponse>('http://localhost:3000/users/me')
+        .pipe(
+          map((profile) => ({
+            ...profile,
+            avatarUrl: profile.avatar ?? this.buildAvatarUrl(profile),
+          })),
+          catchError(() => of(null))
+        );
+    });
+  }
+
+  private buildAvatarUrl(profile: UserProfileResponse) {
+    const reference =
+      profile.name?.trim() || profile.email?.trim() || profile.id;
+
+    if (!reference) {
+      return 'assets/avatar-placeholder.svg';
+    }
+
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      reference
+    )}&background=random&format=png`;
   }
 }

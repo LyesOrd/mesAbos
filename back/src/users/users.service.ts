@@ -28,9 +28,18 @@ export class UsersService {
   }
 
   async updateMe(userId: string, data: UpdateUserDto, avatarPath?: string) {
-    const { email, name, avatar } = data;
+    console.error('=== UpdateMe called ===');
+    console.error('userId:', userId);
+    console.error('data:', data);
+    console.error('avatarPath:', avatarPath);
 
-    const updatePayload: { email?: string | null; name?: string | null; avatar?: string | null } = {};
+    const { email, name } = data;
+
+    const updatePayload: {
+      email?: string | null;
+      name?: string | null;
+      avatar?: string | null;
+    } = {};
 
     if (email !== undefined) {
       updatePayload.email = email;
@@ -40,13 +49,12 @@ export class UsersService {
       updatePayload.name = name;
     }
 
-    if (avatar !== undefined) {
-      updatePayload.avatar = avatar;
-    }
-
+    // Only set avatar if a file was uploaded
     if (avatarPath !== undefined) {
       updatePayload.avatar = avatarPath;
     }
+
+    console.error('Final update payload:', updatePayload);
 
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
@@ -62,6 +70,7 @@ export class UsersService {
       },
     });
 
+    console.log('Updated user result:', updatedUser);
     return updatedUser;
   }
 }
