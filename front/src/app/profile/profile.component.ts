@@ -63,8 +63,8 @@ export class ProfileComponent implements OnInit {
 
   private previewObjectUrl: string | null = null;
 
-  readonly displayAvatar = computed(() =>
-    this.avatarPreview() ?? this.profile()?.avatarUrl ?? null
+  readonly displayAvatar = computed(
+    () => this.avatarPreview() ?? this.profile()?.avatarUrl ?? null
   );
 
   readonly disableSubmit = computed(
@@ -129,7 +129,7 @@ export class ProfileComponent implements OnInit {
         avatar: null,
       });
     } catch {
-      this.errorMessage.set("Impossible de charger votre profil.");
+      this.errorMessage.set('Impossible de charger votre profil.');
     } finally {
       this.loading.set(false);
     }

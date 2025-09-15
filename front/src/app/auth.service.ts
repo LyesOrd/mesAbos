@@ -1,6 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import {
+  Observable,
+  catchError,
+  defer,
+  firstValueFrom,
+  map,
+  of,
+} from 'rxjs';
+
+interface UserProfileResponse {
+  id: string;
+  email: string;
+  name: string | null;
+  avatarUrl?: string | null;
+}
+
+export type UserProfile = UserProfileResponse & { avatarUrl: string };
 
 export interface UserProfile {
   id: string;
@@ -14,9 +30,8 @@ export interface UserProfile {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private tokenKey = 'token';
-
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
+  private readonly tokenKey = 'token';
 
   async login(email: string, password: string) {
     const res = await firstValueFrom(
@@ -83,5 +98,37 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem(this.tokenKey);
+  }
+
+  getProfile(): Observable<UserProfile | null> {
+    return defer(() => {
+      if (!this.isLoggedIn()) {
+        return of(null);
+      }
+
+      return this.http
+        .get<UserProfileResponse>('http://localhost:3000/users/me')
+        .pipe(
+          map((profile) => ({
+            ...profile,
+            avatarUrl:
+              profile.avatarUrl ?? this.buildAvatarUrl(profile),
+          })),
+          catchError(() => of(null))
+        );
+    });
+  }
+
+  private buildAvatarUrl(profile: UserProfileResponse) {
+    const reference =
+      profile.name?.trim() || profile.email?.trim() || profile.id;
+
+    if (!reference) {
+      return 'assets/avatar-placeholder.svg';
+    }
+
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      reference
+    )}&background=random&format=png`;
   }
 }

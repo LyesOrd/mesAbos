@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title>Avatar par défaut</title>
+  <desc>Silhouette générique utilisée en tant qu'image de profil</desc>
+  <defs>
+    <linearGradient id="gradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="64" fill="url(#gradient)" />
+  <g fill="#f9fafb">
+    <circle cx="64" cy="48" r="24" />
+    <path d="M32 106c0-18.778 14.923-34 32-34s32 15.222 32 34" />
+  </g>
+</svg>
