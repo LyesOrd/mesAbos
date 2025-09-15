@@ -26,9 +26,9 @@ interface GoogleTokenError {
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
-    private config: ConfigService,
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService,
   ) {}
 
   private get googleClientId(): string {
@@ -39,7 +39,9 @@ export class AuthService {
     return clientId;
   }
 
-  private async requestGoogleTokenInfo(token: string): Promise<GoogleTokenInfo> {
+  private async requestGoogleTokenInfo(
+    token: string,
+  ): Promise<GoogleTokenInfo> {
     const response = await fetch('https://oauth2.googleapis.com/tokeninfo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -55,7 +57,9 @@ export class AuthService {
         errorDetails = undefined;
       }
       const reason =
-        errorDetails?.error_description ?? errorDetails?.error ?? 'Invalid Google token';
+        errorDetails?.error_description ??
+        errorDetails?.error ??
+        'Invalid Google token';
       throw new UnauthorizedException(reason);
     }
 
@@ -113,8 +117,9 @@ export class AuthService {
 
   private async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user || !user.password) return null;
-    const isValid = this.verifyPassword(password, user.password);
+    const passwordHash = user?.password;
+    if (!passwordHash) return null;
+    const isValid = this.verifyPassword(password, passwordHash);
     if (!isValid) return null;
     return user;
   }
@@ -143,7 +148,9 @@ export class AuthService {
     if (!user) {
       const normalizedEmail = payload.email?.toLowerCase();
       const existing = normalizedEmail
-        ? await this.prisma.user.findUnique({ where: { email: normalizedEmail } })
+        ? await this.prisma.user.findUnique({
+            where: { email: normalizedEmail },
+          })
         : null;
       if (!existing) {
         user = await this.prisma.user.create({

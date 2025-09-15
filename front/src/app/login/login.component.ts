@@ -34,7 +34,10 @@ export class LoginComponent implements AfterViewInit {
   password = '';
   error: string | null = null;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly router: Router
+  ) {}
 
   ngAfterViewInit() {
     google.accounts.id.initialize({

@@ -37,7 +37,10 @@ export class NavbarComponent {
     { label: 'Déconnexion', command: () => this.logout() },
   ];
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly router: Router
+  ) {}
 
   isLoggedIn() {
     return this.auth.isLoggedIn();
