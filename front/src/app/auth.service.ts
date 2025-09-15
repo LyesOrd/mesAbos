@@ -1,28 +1,22 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {
-  Observable,
-  catchError,
-  defer,
-  firstValueFrom,
-  map,
-  of,
-} from 'rxjs';
+import { Observable, catchError, defer, firstValueFrom, map, of } from 'rxjs';
 
 interface UserProfileResponse {
   id: string;
   email: string;
   name: string | null;
-  avatarUrl?: string | null;
+  avatar?: string | null;
+  provider?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
-
-export type UserProfile = UserProfileResponse & { avatarUrl: string };
 
 export interface UserProfile {
   id: string;
   email: string;
   name: string | null;
-  avatarUrl?: string | null;
+  avatarUrl: string;
   provider?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -40,7 +34,7 @@ export class AuthService {
         password,
       })
     );
-    localStorage.setItem(this.tokenKey, res!.token);
+    localStorage.setItem(this.tokenKey, res.token);
   }
 
   async googleLogin(token: string) {
@@ -49,7 +43,7 @@ export class AuthService {
         token,
       })
     );
-    localStorage.setItem(this.tokenKey, res!.token);
+    localStorage.setItem(this.tokenKey, res.token);
   }
 
   async register(name: string, email: string, password: string) {
@@ -59,12 +53,6 @@ export class AuthService {
         email,
         password,
       })
-    );
-  }
-
-  async getProfile() {
-    return firstValueFrom(
-      this.http.get<UserProfile>('http://localhost:3000/users/me')
     );
   }
 
@@ -111,8 +99,7 @@ export class AuthService {
         .pipe(
           map((profile) => ({
             ...profile,
-            avatarUrl:
-              profile.avatarUrl ?? this.buildAvatarUrl(profile),
+            avatarUrl: profile.avatar ?? this.buildAvatarUrl(profile),
           })),
           catchError(() => of(null))
         );

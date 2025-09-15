@@ -88,7 +88,12 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
     @UploadedFile() file?: UploadedAvatarFile,
   ) {
+    console.error('=== Controller updateMe called ===');
+    console.error('user:', req.user);
+    console.error('dto:', dto);
+    console.error('file:', file);
     const avatarPath = file ? `/uploads/avatars/${file.filename}` : undefined;
+    console.error('avatarPath:', avatarPath);
     return this.usersService.updateMe(req.user.id, dto, avatarPath);
   }
 }
