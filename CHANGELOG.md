@@ -1,3 +1,10 @@
+# [1.5.0-rc.2](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.1...v1.5.0-rc.2) (2025-09-15)
+
+
+### Features
+
+* **back:** add users module and ensure auth id usage ([#56](https://github.com/LyesOrd/mesAbos/issues/56)) ([4d5aff5](https://github.com/LyesOrd/mesAbos/commit/4d5aff5ff8cb254580def0e31c702d3e57c9c814))
+
 # [1.5.0-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.5.0-rc.1) (2025-09-15)
 
 
