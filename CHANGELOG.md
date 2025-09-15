@@ -1,3 +1,10 @@
+# [1.5.0-rc.6](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.5...v1.5.0-rc.6) (2025-09-15)
+
+
+### Features
+
+* **front:** add profile profile page ([#61](https://github.com/LyesOrd/mesAbos/issues/61)) ([252f227](https://github.com/LyesOrd/mesAbos/commit/252f2274b1678e5d6d9dae8d2513d1c8a984bded))
+
 # [1.5.0-rc.5](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.4...v1.5.0-rc.5) (2025-09-15)
 
 
