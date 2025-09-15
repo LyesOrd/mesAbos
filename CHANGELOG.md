@@ -1,3 +1,16 @@
+# [1.5.0-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.5.0-rc.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* ci error when npm ci test ([45c6964](https://github.com/LyesOrd/mesAbos/commit/45c6964f44c998ef4f1d59888d5cdac48deffa22))
+* sync package lock back ([59de4a4](https://github.com/LyesOrd/mesAbos/commit/59de4a412478c6a243df52c92859c3c8b353f6e4))
+
+
+### Features
+
+* extend subscription details ([#55](https://github.com/LyesOrd/mesAbos/issues/55)) ([5744d4a](https://github.com/LyesOrd/mesAbos/commit/5744d4aa044e7cd201929b9fdeba7258edde1478))
+
 ## [1.4.1-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.4.1-rc.1) (2025-09-15)
 
 
