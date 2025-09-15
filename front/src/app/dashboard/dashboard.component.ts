@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,11 +16,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputSwitchModule } from 'primeng/inputswitch';
 import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -29,9 +30,11 @@ import * as echarts from 'echarts';
     DropdownModule,
     ButtonModule,
     InputNumberModule,
+    InputSwitchModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   message = 'Bonjour !';
@@ -62,6 +65,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     frequency: 'MONTHLY',
     startDate: new Date(),
     category: '',
+    isRecurring: true,
   };
 
   constructor(private http: HttpClient, private auth: AuthService) {}

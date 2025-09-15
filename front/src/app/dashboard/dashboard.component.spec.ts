@@ -65,5 +65,26 @@ describe('DashboardComponent', () => {
     expect(component.upcomingPayments).toEqual(events);
     expect(component.selectedDates.length).toBe(1);
   });
+
+  it('should submit subscription with isRecurring flag', () => {
+    httpSpy.post.and.returnValue(of({}));
+    component.subscriptionForm = {
+      name: 'Test',
+      amount: 10,
+      frequency: 'MONTHLY',
+      startDate: new Date(),
+      category: 'Streaming',
+      isRecurring: false,
+    };
+    const expected = { ...component.subscriptionForm };
+
+    component.submit();
+
+    expect(httpSpy.post).toHaveBeenCalledWith(
+      'http://localhost:3000/subscriptions',
+      expected,
+      { headers: { Authorization: 'Bearer test-token' } },
+    );
+  });
 });
 

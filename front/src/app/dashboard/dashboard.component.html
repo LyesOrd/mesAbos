@@ -42,10 +42,19 @@
         placeholder="Montant"
       ></p-inputNumber>
 
+      <div class="md:col-span-2 flex items-center gap-2">
+        <p-inputSwitch
+          name="isRecurring"
+          [(ngModel)]="subscriptionForm.isRecurring"
+        ></p-inputSwitch>
+        <label for="isRecurring">Dépense récurrente</label>
+      </div>
+
       <p-dropdown
         [options]="frequencies"
         name="frequency"
         [(ngModel)]="subscriptionForm.frequency"
+        [disabled]="!subscriptionForm.isRecurring"
       ></p-dropdown>
 
       <p-calendar
