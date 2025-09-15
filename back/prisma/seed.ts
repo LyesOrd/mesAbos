@@ -52,6 +52,7 @@ async function main() {
           name: s.name,
           amount: s.amount,
           frequency: 'MONTHLY',
+          isRecurring: true,
           startDate: new Date(),
           userId: user.id,
           categoryId: catRecords[s.category].id,

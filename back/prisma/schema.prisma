@@ -51,6 +51,7 @@ model Subscription {
   name       String
   amount     Float
   frequency  Frequency // Mensuel ou Annuel
+  isRecurring Boolean  @default(true)
   startDate  DateTime
   endDate    DateTime?
   userId     String
