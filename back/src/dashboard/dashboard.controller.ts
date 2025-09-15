@@ -32,15 +32,36 @@ export class DashboardController {
   @Get('category-stats')
   async getCategoryStats(@Req() req: any) {
     const userId = req.user.id;
-    const subs = await this.prisma.subscription.findMany({
-      where: { userId },
-      include: { category: true },
+
+    const [categories, subscriptions] = await Promise.all([
+      this.prisma.category.findMany({ orderBy: { name: 'asc' } }),
+      this.prisma.subscription.findMany({
+        where: { userId },
+        include: { category: true },
+      }),
+    ]);
+
+    const counts = new Map<string, number>();
+    let uncategorized = 0;
+
+    subscriptions.forEach((subscription) => {
+      if (subscription.category) {
+        const current = counts.get(subscription.category.name) ?? 0;
+        counts.set(subscription.category.name, current + 1);
+      } else {
+        uncategorized += 1;
+      }
     });
-    const stats: Record<string, number> = {};
-    subs.forEach((s) => {
-      const name = s.category?.name || 'Autres';
-      stats[name] = (stats[name] || 0) + 1;
-    });
+
+    const stats = categories.map((category) => ({
+      category: category.name,
+      count: counts.get(category.name) ?? 0,
+    }));
+
+    if (uncategorized > 0) {
+      stats.push({ category: 'Autres', count: uncategorized });
+    }
+
     return stats;
   }
 }

@@ -28,31 +28,27 @@ describe('DashboardComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it('should load stats into radar options', () => {
-    const stats = {
-      Streaming: 2,
-      'Jeux vidéos': 1,
-      Livraisons: 3,
-      Musique: 4,
-      Sport: 2,
-      Hobbies: 1,
-    };
+  it('should load category stats into signal', () => {
+    const stats = [
+      { category: 'Streaming', count: 3 },
+      { category: 'Sport', count: 1 },
+    ];
     httpSpy.get.and.returnValue(of(stats));
 
-    component.loadStats();
+    component.loadCategoryStats();
 
     expect(httpSpy.get).toHaveBeenCalledWith(
       'http://localhost:3000/dashboard/category-stats',
       { headers: { Authorization: 'Bearer test-token' } },
     );
 
-    const series = (component.radarOptions.series as any[])[0];
-    expect(series.type).toBe('radar');
-    expect(series.data[0].value).toEqual([2, 1, 3, 4, 2, 1]);
+    expect(component.categoryStats()).toEqual(stats);
   });
 
-  it('should populate upcoming payments', () => {
-    const events = [{ name: 'Netflix', date: '2024-01-01' }];
+  it('should populate upcoming payments and calendar control', () => {
+    const events = [
+      { id: '1', name: 'Netflix', date: '2024-01-01T00:00:00.000Z', amount: 9.99 },
+    ];
     httpSpy.get.and.returnValue(of(events));
 
     component.loadUpcoming();
@@ -62,8 +58,60 @@ describe('DashboardComponent', () => {
       { headers: { Authorization: 'Bearer test-token' } },
     );
 
-    expect(component.upcomingPayments).toEqual(events);
-    expect(component.selectedDates.length).toBe(1);
+    expect(component.upcomingPayments()).toEqual(events);
+    expect(component.calendarControl.value.length).toBe(1);
+  });
+
+  it('should load subscriptions list', () => {
+    const subs = [
+      {
+        id: 'sub',
+        name: 'Netflix',
+        amount: 9.99,
+        frequency: 'MONTHLY' as const,
+        startDate: '2024-01-01T00:00:00.000Z',
+        endDate: null,
+        category: 'Streaming',
+      },
+    ];
+    httpSpy.get.and.returnValue(of(subs));
+
+    component.loadSubscriptions();
+
+    expect(httpSpy.get).toHaveBeenCalledWith('http://localhost:3000/subscriptions', {
+      headers: { Authorization: 'Bearer test-token' },
+    });
+    expect(component.subscriptions()).toEqual(subs);
+  });
+
+  it('should toggle expense dialog visibility', () => {
+    component.openExpenseDialog();
+    expect(component.expenseDialogOpen()).toBeTrue();
+    component.closeExpenseDialog();
+    expect(component.expenseDialogOpen()).toBeFalse();
+  });
+
+  it('should post expense on submission and refresh upcoming payments', () => {
+    const postResponse = of({});
+    httpSpy.post.and.returnValue(postResponse);
+    spyOn(component, 'closeExpenseDialog');
+    spyOn(component, 'loadUpcoming');
+
+    component.handleExpenseSubmit({ name: 'Test', amount: 12, date: new Date('2024-02-01') });
+
+    expect(httpSpy.post).toHaveBeenCalledWith(
+      'http://localhost:3000/expenses',
+      {
+        name: 'Test',
+        amount: 12,
+        date: new Date('2024-02-01').toISOString(),
+      },
+      {
+        headers: { Authorization: 'Bearer test-token' },
+      },
+    );
+    expect(component.closeExpenseDialog).toHaveBeenCalled();
+    expect(component.loadUpcoming).toHaveBeenCalled();
   });
 });
 

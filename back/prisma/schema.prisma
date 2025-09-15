@@ -35,6 +35,7 @@ model User {
   BankAccount BankAccount[]
 
   Transaction Transaction[]
+  expenses    Expense[]
 }
 
 model Session {
@@ -125,6 +126,19 @@ model Transaction {
   category    Category?    @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime @default(now())
+}
+
+model Expense {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  amount    Float
+  date      DateTime
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Frequency {

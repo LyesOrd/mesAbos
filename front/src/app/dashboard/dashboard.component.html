@@ -1,75 +1,91 @@
 <app-navbar></app-navbar>
 
-<section class="py-8 px-6 max-w-7xl mx-auto">
-  <h2 class="text-3xl font-bold mb-8">{{ message }}</h2>
+<section class="py-8 px-6 max-w-7xl mx-auto space-y-12">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <h2 class="text-3xl font-bold text-slate-900">{{ message }}</h2>
+    <button pButton type="button" label="Ajouter une dépense" (click)="openExpenseDialog()"></button>
+  </div>
 
-  <div class="grid gap-8 md:grid-cols-3">
-    <div class="md:col-span-2">
+  <div class="grid gap-8 lg:grid-cols-3">
+    <div class="space-y-4 lg:col-span-2">
       <p-calendar
-        [(ngModel)]="selectedDates"
-        inline="true"
+        [formControl]="calendarControl"
         selectionMode="multiple"
+        [inline]="true"
+        [readonlyInput]="true"
       ></p-calendar>
-      <ul class="mt-4 list-disc list-inside">
-        <li *ngFor="let p of upcomingPayments">
-          {{ p.name }} - {{ p.date | date }}
-        </li>
-      </ul>
+
+      @if (upcomingPayments().length) {
+        <ul class="space-y-3">
+          @for (payment of upcomingPayments(); track payment.id) {
+            <li class="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
+              <div>
+                <p class="font-semibold text-slate-900">{{ payment.name }}</p>
+                <p class="text-sm text-slate-500">{{ payment.date | date: 'longDate' }}</p>
+              </div>
+              <span class="font-semibold text-indigo-600">{{ payment.amount | currency: 'EUR' : 'symbol' : '1.2-2' }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="text-sm text-slate-500">Aucun paiement à venir pour le moment.</p>
+      }
     </div>
-    <div class="p-4 rounded-xl border shadow-sm">
-      <div #radarChart class="w-full h-72"></div>
+
+    <div class="p-4 rounded-xl border shadow-sm bg-white">
+      <div #barChart class="w-full h-80"></div>
     </div>
   </div>
 
-  <div class="mt-12 p-6 rounded-xl border shadow-sm">
-    <h3 class="text-xl font-semibold mb-4">Ajouter un abonnement</h3>
-    <form class="grid gap-4 md:grid-cols-2" (ngSubmit)="submit()" #form="ngForm">
-      <input
-        pInputText
-        type="text"
-        name="name"
-        [(ngModel)]="subscriptionForm.name"
-        placeholder="Nom"
-        required
-        class="md:col-span-2"
-      />
-
-      <p-inputNumber
-        name="amount"
-        [(ngModel)]="subscriptionForm.amount"
-        mode="decimal"
-        [useGrouping]="false"
-        placeholder="Montant"
-      ></p-inputNumber>
-
-      <p-dropdown
-        [options]="frequencies"
-        name="frequency"
-        [(ngModel)]="subscriptionForm.frequency"
-      ></p-dropdown>
-
-      <p-calendar
-        name="startDate"
-        [(ngModel)]="subscriptionForm.startDate"
-        dateFormat="yy-mm-dd"
-      ></p-calendar>
-
-      <p-dropdown
-        [options]="categories"
-        name="category"
-        [(ngModel)]="subscriptionForm.category"
-        placeholder="Catégorie"
-        class="md:col-span-2"
-      ></p-dropdown>
-
-      <button
-        pButton
-        type="submit"
-        label="Ajouter"
-        class="md:col-span-2"
-        [disabled]="form.invalid"
-      ></button>
-    </form>
+  <div>
+    <h3 class="text-xl font-semibold mb-4 text-slate-900">Mes abonnements</h3>
+    @if (subscriptions().length) {
+      <div class="overflow-x-auto rounded-xl border shadow-sm">
+        <table class="min-w-full divide-y divide-slate-200">
+          <thead class="bg-slate-50">
+            <tr>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Nom</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Catégorie</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Type</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Montant</th>
+              <th scope="col" class="px-4 py-3 text-left text-sm font-semibold text-slate-600">Depuis</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            @for (subscription of subscriptions(); track subscription.id) {
+              <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ subscription.name }}</td>
+                <td class="px-4 py-3 text-sm text-slate-600">{{ subscription.category ?? 'Autres' }}</td>
+                <td class="px-4 py-3 text-sm">
+                  <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600">
+                    {{ frequencyLabels[subscription.frequency] }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-sm font-semibold text-slate-900">{{ subscription.amount | currency: 'EUR' : 'symbol' : '1.2-2' }}</td>
+                <td class="px-4 py-3 text-sm text-slate-600">{{ subscription.startDate | date: 'longDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="text-sm text-slate-500">Aucun abonnement enregistré pour le moment.</p>
+    }
   </div>
+
+  <p-dialog
+    header="Nouvelle dépense"
+    [modal]="true"
+    [visible]="expenseDialogOpen()"
+    [dismissableMask]="true"
+    [closeOnEscape]="true"
+    (onHide)="closeExpenseDialog()"
+    [style]="{ width: '32rem' }"
+  >
+    <app-expense-form
+      (submitted)="handleExpenseSubmit($event)"
+      (cancelled)="closeExpenseDialog()"
+    />
+  </p-dialog>
 </section>
 

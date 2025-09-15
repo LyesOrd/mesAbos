@@ -4,67 +4,112 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  signal,
+  ChangeDetectionStrategy,
+  effect,
+  computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { CalendarModule } from 'primeng/calendar';
-import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogModule } from 'primeng/dialog';
+import { ExpenseFormComponent } from './expense-form.component';
 import * as echarts from 'echarts';
+
+type UpcomingPayment = {
+  id: string;
+  name: string;
+  date: string;
+  amount: number;
+};
+
+type SubscriptionSummary = {
+  id: string;
+  name: string;
+  amount: number;
+  frequency: 'MONTHLY' | 'YEARLY';
+  startDate: string;
+  endDate: string | null;
+  category: string | null;
+};
+
+type CategoryStat = {
+  category: string;
+  count: number;
+};
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     NavbarComponent,
     CalendarModule,
-    InputTextModule,
-    DropdownModule,
     ButtonModule,
-    InputNumberModule,
+    DialogModule,
+    ExpenseFormComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   message = 'Bonjour !';
 
-  @ViewChild('radarChart') radarChartRef!: ElementRef;
-  radarInstance?: echarts.ECharts;
-  radarOptions: echarts.EChartsOption = {};
-  upcomingPayments: { name: string; date: string }[] = [];
-  selectedDates: Date[] = [];
+  @ViewChild('barChart') barChartRef!: ElementRef;
+  private barChartInstance?: echarts.ECharts;
+  private readonly barChartOptions = computed<echarts.EChartsOption>(() => {
+    const stats = this.categoryStats();
+    const labels = stats.map((stat) => stat.category);
+    const values = stats.map((stat) => stat.count);
+
+    return {
+      title: { text: 'Abonnements par catégorie' },
+      tooltip: { trigger: 'axis' },
+      xAxis: {
+        type: 'category',
+        data: labels,
+        axisLabel: { rotate: 20 },
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Nombre d’abonnements',
+        minInterval: 1,
+      },
+      series: [
+        {
+          type: 'bar',
+          data: values,
+          itemStyle: { color: '#6366f1' },
+        },
+      ],
+    } satisfies echarts.EChartsOption;
+  });
+
+  readonly upcomingPayments = signal<UpcomingPayment[]>([]);
+  readonly subscriptions = signal<SubscriptionSummary[]>([]);
+  readonly categoryStats = signal<CategoryStat[]>([]);
+  readonly calendarControl = new FormControl<Date[]>([], { nonNullable: true });
+  readonly frequencyLabels: Record<SubscriptionSummary['frequency'], string> = {
+    MONTHLY: 'Mensuel',
+    YEARLY: 'Annuel',
+  };
   private apiUrl = 'http://localhost:3000';
 
-  categories = [
-    { label: 'Streaming', value: 'Streaming' },
-    { label: 'Jeux vidéos', value: 'Jeux vidéos' },
-    { label: 'Livraisons', value: 'Livraisons' },
-    { label: 'Musique', value: 'Musique' },
-    { label: 'Sport', value: 'Sport' },
-    { label: 'Hobbies', value: 'Hobbies' },
-  ];
-  frequencies = [
-    { label: 'Mensuel', value: 'MONTHLY' },
-    { label: 'Annuel', value: 'YEARLY' },
-  ];
+  expenseDialogOpen = signal(false);
 
-  subscriptionForm = {
-    name: '',
-    amount: 0,
-    frequency: 'MONTHLY',
-    startDate: new Date(),
-    category: '',
-  };
-
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  constructor(private http: HttpClient, private auth: AuthService) {
+    effect(() => {
+      if (!this.barChartInstance) {
+        return;
+      }
+      this.barChartInstance.setOption(this.barChartOptions());
+    });
+  }
 
   ngOnInit() {
     const token = this.auth.getToken();
@@ -75,84 +120,78 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       .subscribe((res) => (this.message = res.message));
 
     this.loadUpcoming();
-    this.loadStats();
+    this.loadCategoryStats();
+    this.loadSubscriptions();
   }
 
   ngAfterViewInit() {
-    this.radarInstance = echarts.init(this.radarChartRef.nativeElement);
-    if (Object.keys(this.radarOptions).length) {
-      this.radarInstance.setOption(this.radarOptions);
-    }
+    this.barChartInstance = echarts.init(this.barChartRef.nativeElement);
+    this.barChartInstance.setOption(this.barChartOptions());
   }
 
   loadUpcoming() {
     const token = this.auth.getToken();
     this.http
-      .get<{ name: string; date: string }[]>(
+      .get<UpcomingPayment[]>(
         `${this.apiUrl}/dashboard/upcoming-payments`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       )
       .subscribe((events) => {
-        this.upcomingPayments = events;
-        this.selectedDates = events.map((e) => new Date(e.date));
+        this.upcomingPayments.set(events);
+        const dates = events.map((event) => new Date(event.date));
+        this.calendarControl.setValue(dates, { emitEvent: false });
       });
   }
 
-  loadStats() {
+  loadCategoryStats() {
     const token = this.auth.getToken();
     this.http
-      .get<Record<string, number>>(`${this.apiUrl}/dashboard/category-stats`, {
+      .get<CategoryStat[]>(`${this.apiUrl}/dashboard/category-stats`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .subscribe((stats) => {
-        const labels = this.categories.map((c) => c.value);
-        const data = labels.map((l) => stats[l] || 0);
-        const maxVal = Math.max(...data, 1);
-        this.radarOptions = {
-          title: { text: 'Répartition des abonnements' },
-          legend: { data: ['Subscriptions'] },
-          tooltip: {},
-          radar: {
-            indicator: labels.map((name) => ({ name, max: maxVal })),
-          },
-          series: [
-            {
-              name: 'Streaming',
-              type: 'radar',
-              data: [
-                {
-                  value: data,
-                  name: 'Streaming',
-                },
-              ],
-            },
-          ],
-        };
-        if (this.radarInstance) {
-          this.radarInstance.setOption(this.radarOptions);
-        }
+        this.categoryStats.set(stats);
       });
   }
 
-  submit() {
+  loadSubscriptions() {
     const token = this.auth.getToken();
-    const body = { ...this.subscriptionForm };
     this.http
-      .post(`${this.apiUrl}/subscriptions`, body, {
+      .get<SubscriptionSummary[]>(`${this.apiUrl}/subscriptions`, {
         headers: { Authorization: `Bearer ${token}` },
       })
+      .subscribe((subs) => {
+        this.subscriptions.set(subs);
+      });
+  }
+
+  openExpenseDialog() {
+    this.expenseDialogOpen.set(true);
+  }
+
+  closeExpenseDialog() {
+    this.expenseDialogOpen.set(false);
+  }
+
+  handleExpenseSubmit(expense: { name: string; amount: number; date: Date }) {
+    const token = this.auth.getToken();
+    this.http
+      .post(
+        `${this.apiUrl}/expenses`,
+        {
+          name: expense.name,
+          amount: expense.amount,
+          date: expense.date.toISOString(),
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      )
       .subscribe(() => {
-        this.subscriptionForm = {
-          name: '',
-          amount: 0,
-          frequency: 'MONTHLY',
-          startDate: new Date(),
-          category: '',
-        };
+        this.closeExpenseDialog();
         this.loadUpcoming();
-        this.loadStats();
       });
   }
 }

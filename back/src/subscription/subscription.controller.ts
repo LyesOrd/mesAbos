@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { PrismaService } from '../prisma.service';
 
@@ -6,6 +6,26 @@ import { PrismaService } from '../prisma.service';
 @UseGuards(AuthGuard('jwt'))
 export class SubscriptionController {
   constructor(private prisma: PrismaService) {}
+
+  @Get()
+  async list(@Req() req: any) {
+    const userId = req.user.id;
+    const subscriptions = await this.prisma.subscription.findMany({
+      where: { userId },
+      include: { category: true },
+      orderBy: { startDate: 'desc' },
+    });
+
+    return subscriptions.map((subscription) => ({
+      id: subscription.id,
+      name: subscription.name,
+      amount: subscription.amount,
+      frequency: subscription.frequency,
+      startDate: subscription.startDate.toISOString(),
+      endDate: subscription.endDate ? subscription.endDate.toISOString() : null,
+      category: subscription.category?.name ?? null,
+    }));
+  }
 
   @Post()
   async create(@Body() body: any, @Req() req: any) {

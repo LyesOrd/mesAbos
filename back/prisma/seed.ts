@@ -70,6 +70,32 @@ async function main() {
     console.log(`📅 Subscription ready: ${s.name}`);
   }
 
+  const expenses = [
+    { name: 'Courses', amount: 45.6, date: new Date('2024-02-20T10:00:00.000Z') },
+    {
+      name: 'Sortie cinéma',
+      amount: 28.9,
+      date: new Date('2024-02-17T18:30:00.000Z'),
+    },
+  ];
+
+  for (const expense of expenses) {
+    const exists = await prisma.expense.findFirst({
+      where: { userId: user.id, name: expense.name },
+    });
+    if (!exists) {
+      await prisma.expense.create({
+        data: {
+          userId: user.id,
+          name: expense.name,
+          amount: expense.amount,
+          date: expense.date,
+        },
+      });
+      console.log(`💸 Expense ready: ${expense.name}`);
+    }
+  }
+
   console.log('✅ Seeding completed!');
 }
 
