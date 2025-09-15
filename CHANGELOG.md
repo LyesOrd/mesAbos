@@ -1,3 +1,10 @@
+# [1.5.0-rc.4](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2025-09-15)
+
+
+### Bug Fixes
+
+* stabilize Google authentication verification ([#59](https://github.com/LyesOrd/mesAbos/issues/59)) ([4705f50](https://github.com/LyesOrd/mesAbos/commit/4705f502f0902784f1b83c686fd50e9190b7d234))
+
 # [1.5.0-rc.3](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2025-09-15)
 
 
