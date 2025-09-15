@@ -15,7 +15,31 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import * as echarts from 'echarts';
+
+interface Subscription {
+  id: string;
+  name: string;
+  amount: number;
+  frequency: 'MONTHLY' | 'YEARLY';
+  startDate: string;
+  endDate?: string;
+  currency: string;
+  notes?: string;
+  category?: {
+    id: string;
+    name: string;
+  };
+  payments?: any[];
+  _count?: {
+    payments: number;
+  };
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -29,9 +53,14 @@ import * as echarts from 'echarts';
     DropdownModule,
     ButtonModule,
     InputNumberModule,
+    TableModule,
+    DialogModule,
+    ConfirmDialogModule,
+    ToastModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
+  providers: [ConfirmationService, MessageService],
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   message = 'Bonjour !';
@@ -41,7 +70,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   radarOptions: echarts.EChartsOption = {};
   upcomingPayments: { name: string; date: string }[] = [];
   selectedDates: Date[] = [];
-  private apiUrl = 'http://localhost:3000';
+  subscriptions: Subscription[] = [];
+  selectedSubscription: Subscription | null = null;
+  displayEditDialog = false;
+  displayDeleteDialog = false;
+  
+  private readonly apiUrl = 'http://localhost:3000';
 
   categories = [
     { label: 'Streaming', value: 'Streaming' },
@@ -64,7 +98,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     category: '',
   };
 
-  constructor(private http: HttpClient, private auth: AuthService) {}
+  editForm = {
+    id: '',
+    name: '',
+    amount: 0,
+    frequency: 'MONTHLY',
+    startDate: new Date(),
+    endDate: null as Date | null,
+    category: '',
+    notes: '',
+  };
+
+  constructor(
+    private readonly http: HttpClient,
+    private readonly auth: AuthService,
+    private readonly confirmationService: ConfirmationService,
+    private readonly messageService: MessageService,
+  ) {}
 
   ngOnInit() {
     const token = this.auth.getToken();
@@ -74,6 +124,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       })
       .subscribe((res) => (this.message = res.message));
 
+    this.loadSubscriptions();
     this.loadUpcoming();
     this.loadStats();
   }
@@ -151,8 +202,110 @@ export class DashboardComponent implements OnInit, AfterViewInit {
           startDate: new Date(),
           category: '',
         };
+        this.loadSubscriptions();
         this.loadUpcoming();
         this.loadStats();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Abonnement ajouté avec succès',
+        });
       });
+  }
+
+  loadSubscriptions() {
+    const token = this.auth.getToken();
+    this.http
+      .get<Subscription[]>(`${this.apiUrl}/subscriptions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe((subscriptions) => {
+        this.subscriptions = subscriptions;
+      });
+  }
+
+  editSubscription(subscription: Subscription) {
+    this.selectedSubscription = subscription;
+    this.editForm = {
+      id: subscription.id,
+      name: subscription.name,
+      amount: subscription.amount,
+      frequency: subscription.frequency,
+      startDate: new Date(subscription.startDate),
+      endDate: subscription.endDate ? new Date(subscription.endDate) : null,
+      category: subscription.category?.name || '',
+      notes: subscription.notes || '',
+    };
+    this.displayEditDialog = true;
+  }
+
+  saveSubscription() {
+    if (!this.selectedSubscription) return;
+
+    const token = this.auth.getToken();
+    const body = {
+      name: this.editForm.name,
+      amount: this.editForm.amount,
+      frequency: this.editForm.frequency,
+      startDate: this.editForm.startDate.toISOString(),
+      endDate: this.editForm.endDate?.toISOString() || null,
+      category: this.editForm.category,
+      notes: this.editForm.notes,
+    };
+
+    this.http
+      .put(`${this.apiUrl}/subscriptions/${this.selectedSubscription.id}`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe(() => {
+        this.displayEditDialog = false;
+        this.loadSubscriptions();
+        this.loadUpcoming();
+        this.loadStats();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Abonnement modifié avec succès',
+        });
+      });
+  }
+
+  confirmDelete(subscription: Subscription) {
+    this.confirmationService.confirm({
+      message: `Êtes-vous sûr de vouloir supprimer l'abonnement "${subscription.name}" ?`,
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Oui',
+      rejectLabel: 'Non',
+      accept: () => {
+        this.deleteSubscription(subscription.id);
+      },
+    });
+  }
+
+  deleteSubscription(id: string) {
+    const token = this.auth.getToken();
+    this.http
+      .delete(`${this.apiUrl}/subscriptions/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe(() => {
+        this.loadSubscriptions();
+        this.loadUpcoming();
+        this.loadStats();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Succès',
+          detail: 'Abonnement supprimé avec succès',
+        });
+      });
+  }
+
+  getFrequencyLabel(frequency: 'MONTHLY' | 'YEARLY'): string {
+    return frequency === 'MONTHLY' ? 'Mensuel' : 'Annuel';
+  }
+
+  formatDate(dateString: string): string {
+    return new Date(dateString).toLocaleDateString('fr-FR');
   }
 }
