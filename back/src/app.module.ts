@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
       validationSchema: Joi.object({
         JWT_SECRET: Joi.string().required(),
+        GOOGLE_CLIENT_ID: Joi.string().required(),
       }),
     }),
     AuthModule,
