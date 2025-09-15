@@ -34,6 +34,7 @@ describe('UsersController', () => {
       id: 'user-123',
       email: 'john@doe.test',
       name: 'John Doe',
+      avatar: '/uploads/avatars/john.png',
       provider: 'LOCAL',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -54,6 +55,7 @@ describe('UsersController', () => {
       id: 'user-456',
       email: 'jane@doe.test',
       name: 'Jane Updated',
+      avatar: '/uploads/avatars/jane.png',
       provider: 'LOCAL',
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -61,6 +63,6 @@ describe('UsersController', () => {
 
     await controller.updateMe(request, payload);
 
-    expect(usersService.updateMe).toHaveBeenCalledWith('user-456', payload);
+    expect(usersService.updateMe).toHaveBeenCalledWith('user-456', payload, undefined);
   });
 });

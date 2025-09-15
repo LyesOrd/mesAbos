@@ -13,6 +13,7 @@ export class UsersService {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         provider: true,
         createdAt: true,
         updatedAt: true,
@@ -26,19 +27,35 @@ export class UsersService {
     return user;
   }
 
-  async updateMe(userId: string, data: UpdateUserDto) {
-    const { email, name } = data;
+  async updateMe(userId: string, data: UpdateUserDto, avatarPath?: string) {
+    const { email, name, avatar } = data;
+
+    const updatePayload: { email?: string | null; name?: string | null; avatar?: string | null } = {};
+
+    if (email !== undefined) {
+      updatePayload.email = email;
+    }
+
+    if (name !== undefined) {
+      updatePayload.name = name;
+    }
+
+    if (avatar !== undefined) {
+      updatePayload.avatar = avatar;
+    }
+
+    if (avatarPath !== undefined) {
+      updatePayload.avatar = avatarPath;
+    }
 
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
-      data: {
-        ...(email !== undefined ? { email } : {}),
-        ...(name !== undefined ? { name } : {}),
-      },
+      data: updatePayload,
       select: {
         id: true,
         email: true,
         name: true,
+        avatar: true,
         provider: true,
         createdAt: true,
         updatedAt: true,
