@@ -4,6 +4,8 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
+  signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,11 +17,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { DialogModule } from 'primeng/dialog';
+import { ExpenseFormComponent } from './expense-form.component';
 import * as echarts from 'echarts';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -29,9 +32,12 @@ import * as echarts from 'echarts';
     DropdownModule,
     ButtonModule,
     InputNumberModule,
+    DialogModule,
+    ExpenseFormComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   message = 'Bonjour !';
@@ -42,6 +48,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   upcomingPayments: { name: string; date: string }[] = [];
   selectedDates: Date[] = [];
   private apiUrl = 'http://localhost:3000';
+
+  expenseDialogOpen = signal(false);
 
   categories = [
     { label: 'Streaming', value: 'Streaming' },
@@ -154,5 +162,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         this.loadUpcoming();
         this.loadStats();
       });
+  }
+
+  openExpenseDialog() {
+    this.expenseDialogOpen.set(true);
+  }
+
+  closeExpenseDialog() {
+    this.expenseDialogOpen.set(false);
   }
 }

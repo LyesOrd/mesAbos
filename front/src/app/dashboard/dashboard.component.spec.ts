@@ -65,5 +65,12 @@ describe('DashboardComponent', () => {
     expect(component.upcomingPayments).toEqual(events);
     expect(component.selectedDates.length).toBe(1);
   });
+
+  it('should toggle expense dialog visibility', () => {
+    component.openExpenseDialog();
+    expect(component.expenseDialogOpen()).toBeTrue();
+    component.closeExpenseDialog();
+    expect(component.expenseDialogOpen()).toBeFalse();
+  });
 });
 
