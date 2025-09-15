@@ -33,7 +33,7 @@ export class NavbarComponent {
 
   readonly userItems: MenuItem[] = [
     { label: 'Dashboard', routerLink: '/dashboard' },
-    { label: 'Profil', routerLink: '/dashboard' },
+    { label: 'Profil', routerLink: '/profile' },
     { label: 'Déconnexion', command: () => this.logout() },
   ];
 

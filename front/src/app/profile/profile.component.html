@@ -1,0 +1,139 @@
+<app-navbar></app-navbar>
+
+<section class="px-4 py-10 md:px-8">
+  <div class="mx-auto flex w-full max-w-4xl flex-col gap-8">
+    <div class="flex flex-col gap-4 text-center md:text-left">
+      <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+        Mon profil
+      </h1>
+      <p class="text-surface-600 dark:text-surface-300">
+        Gérez vos informations personnelles et gardez votre profil à jour.
+      </p>
+    </div>
+
+    @if (loading()) {
+      <div
+        class="grid gap-6 rounded-2xl bg-surface-0 p-6 shadow-lg dark:bg-surface-900 md:grid-cols-[280px_1fr]"
+      >
+        <div class="flex flex-col items-center gap-4">
+          <div class="h-28 w-28 animate-pulse rounded-full bg-surface-200 dark:bg-surface-700"></div>
+          <div class="h-4 w-32 animate-pulse rounded bg-surface-200 dark:bg-surface-700"></div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="h-12 animate-pulse rounded bg-surface-200 dark:bg-surface-700"></div>
+          <div class="h-24 animate-pulse rounded bg-surface-200 dark:bg-surface-700"></div>
+          <div class="h-12 animate-pulse rounded bg-surface-200 dark:bg-surface-700"></div>
+        </div>
+      </div>
+    } @else {
+      <div
+        class="grid gap-6 rounded-2xl bg-surface-0 p-6 shadow-lg dark:bg-surface-900 md:grid-cols-[280px_1fr]"
+      >
+        <div class="flex flex-col items-center gap-5 border-b border-surface-100 pb-6 dark:border-surface-700 md:border-b-0 md:border-r md:pb-0 md:pr-6">
+          <div
+            class="flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-4 border-primary-100 bg-surface-100 text-primary-500 dark:border-primary-900 dark:bg-surface-800"
+          >
+            @if (displayAvatar(); as avatarSrc) {
+              <img
+                [ngSrc]="avatarSrc"
+                width="128"
+                height="128"
+                class="h-full w-full object-cover"
+                [alt]="profile()?.name ? 'Avatar de ' + profile()!.name : 'Avatar utilisateur'"
+                priority
+              />
+            } @else {
+              <span class="pi pi-user text-4xl"></span>
+            }
+          </div>
+          <div class="flex flex-col items-center gap-1 text-center">
+            <h2 class="text-xl font-semibold text-surface-900 dark:text-surface-0">
+              {{ profile()?.name || 'Utilisateur' }}
+            </h2>
+            <p class="text-sm text-surface-600 dark:text-surface-300">
+              {{ profile()?.email || 'Email non renseigné' }}
+            </p>
+          </div>
+        </div>
+
+        <form
+          class="flex flex-col gap-6"
+          [formGroup]="profileForm"
+          (ngSubmit)="save()"
+          novalidate
+        >
+          @if (errorMessage(); as error) {
+            <div class="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-500/50 dark:bg-red-500/10">
+              {{ error }}
+            </div>
+          }
+
+          @if (successMessage(); as success) {
+            <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10">
+              {{ success }}
+            </div>
+          }
+
+          <div class="flex flex-col gap-2">
+            <label
+              for="name"
+              class="text-sm font-medium text-surface-600 dark:text-surface-300"
+            >
+              Nom complet
+            </label>
+            <input
+              pInputText
+              id="name"
+              type="text"
+              formControlName="name"
+              class="w-full"
+              autocomplete="name"
+              placeholder="Votre nom"
+            />
+            @if (
+              profileForm.controls.name.touched &&
+                profileForm.controls.name.invalid
+            ) {
+              <span class="text-sm text-red-600 dark:text-red-400">
+                Veuillez indiquer un nom valide (2 caractères minimum).
+              </span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label
+              for="avatar"
+              class="text-sm font-medium text-surface-600 dark:text-surface-300"
+            >
+              Photo de profil
+            </label>
+            <input
+              id="avatar"
+              type="file"
+              accept="image/*"
+              (change)="onAvatarSelected($event)"
+              class="block w-full cursor-pointer text-sm text-surface-600 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary-500 file:px-5 file:py-2 file:font-semibold file:text-white hover:file:bg-primary-600 focus:outline-none dark:text-surface-200"
+            />
+            <span class="text-xs text-surface-500 dark:text-surface-400">
+              Formats acceptés : JPG, PNG. Taille maximale 5 Mo.
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-3 border-t border-surface-100 pt-4 dark:border-surface-700 md:flex-row md:items-center md:justify-between">
+            <div class="text-sm text-surface-500 dark:text-surface-400">
+              Les modifications seront visibles immédiatement.
+            </div>
+            <button
+              pButton
+              type="submit"
+              class="w-full md:w-auto"
+              [disabled]="disableSubmit()"
+              [label]="saving() ? 'Enregistrement…' : 'Enregistrer'"
+              icon="pi pi-save"
+            ></button>
+          </div>
+        </form>
+      </div>
+    }
+  </div>
+</section>
