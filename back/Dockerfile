@@ -4,7 +4,7 @@ WORKDIR /back
 
 # 1) Installer les dépendances
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # 2) Copier le code source et la configuration nécessaires à la compilation
 COPY prisma ./prisma
