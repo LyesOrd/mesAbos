@@ -1,3 +1,10 @@
+# [1.5.0-rc.8](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.7...v1.5.0-rc.8) (2025-09-15)
+
+
+### Features
+
+* table stats for subs ([#63](https://github.com/LyesOrd/mesAbos/issues/63)) ([1a767b3](https://github.com/LyesOrd/mesAbos/commit/1a767b35c3f75b3edf5fee2715187cdccd11abb2))
+
 # [1.5.0-rc.7](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.6...v1.5.0-rc.7) (2025-09-15)
 
 
