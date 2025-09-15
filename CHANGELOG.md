@@ -1,3 +1,10 @@
+# [1.5.0-rc.5](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.4...v1.5.0-rc.5) (2025-09-15)
+
+
+### Features
+
+* support user avatar uploads ([#60](https://github.com/LyesOrd/mesAbos/issues/60)) ([9345675](https://github.com/LyesOrd/mesAbos/commit/93456754429c2606c6e660d4e35a7f0f213d23c7))
+
 # [1.5.0-rc.4](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2025-09-15)
 
 
