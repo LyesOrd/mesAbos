@@ -1,3 +1,10 @@
+# [1.5.0-rc.3](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2025-09-15)
+
+
+### Bug Fixes
+
+* import style tsconfig ([42de7c8](https://github.com/LyesOrd/mesAbos/commit/42de7c820f2a00e4f8dbb2456e6aae334a96382d))
+
 # [1.5.0-rc.2](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.1...v1.5.0-rc.2) (2025-09-15)
 
 
