@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +12,9 @@ import { SubscriptionModule } from './subscription/subscription.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.env.${process.env.NODE_ENV || 'development'}`, '.env'],
+      validationSchema: Joi.object({
+        JWT_SECRET: Joi.string().required(),
+      }),
     }),
     AuthModule,
     DashboardModule,
