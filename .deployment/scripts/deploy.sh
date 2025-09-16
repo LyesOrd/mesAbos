@@ -13,8 +13,8 @@ NC='\033[0m' # No Color
 
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-DEPLOYMENT_DIR="$ROOT_DIR/.deployment"
+DEPLOYMENT_DIR="$(dirname "$SCRIPT_DIR")"
+ROOT_DIR="$(dirname "$DEPLOYMENT_DIR")"
 
 ENV=${1:-production}
 echo -e "${GREEN}🚀 Déploiement MesAbos - Environnement: $ENV${NC}"

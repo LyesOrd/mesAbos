@@ -5,9 +5,14 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Configuration des uploads AVANT le préfixe global
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
   });
+
+  // Préfixe global API pour toutes les routes (sauf uploads)
+  app.setGlobalPrefix('api');
 
   // Configuration CORS dynamique selon l'environnement
   const allowedOrigins = ['http://localhost:4200', 'http://127.0.0.1:4200'];

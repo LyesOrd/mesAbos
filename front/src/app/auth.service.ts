@@ -60,10 +60,7 @@ export class AuthService {
 
   async updateProfile(data: FormData): Promise<UserProfile> {
     const response = await firstValueFrom(
-      this.http.patch<UserProfileResponse>(
-        `${this.apiUrl}/users/me`,
-        data
-      )
+      this.http.patch<UserProfileResponse>(`${this.apiUrl}/users/me`, data)
     );
 
     // Transformer la réponse en incluant l'URL complète de l'avatar
@@ -105,22 +102,22 @@ export class AuthService {
         return of(null);
       }
 
-      return this.http
-        .get<UserProfileResponse>(`${this.apiUrl}/users/me`)
-        .pipe(
-          map((profile) => ({
-            ...profile,
-            avatarUrl: this.buildAvatarUrl(profile),
-          })),
-          catchError(() => of(null))
-        );
+      return this.http.get<UserProfileResponse>(`${this.apiUrl}/users/me`).pipe(
+        map((profile) => ({
+          ...profile,
+          avatarUrl: this.buildAvatarUrl(profile),
+        })),
+        catchError(() => of(null))
+      );
     });
   }
 
   private buildAvatarUrl(profile: UserProfileResponse): string {
     // Si l'utilisateur a un avatar uploadé, on utilise l'URL complète
     if (profile.avatar) {
-      return `${this.apiUrl}${profile.avatar}`;
+      // Les uploads sont servis directement sans le préfixe /api
+      const baseUrl = this.apiUrl.replace('/api', '');
+      return `${baseUrl}${profile.avatar}`;
     }
 
     // Sinon, on génère un avatar par défaut

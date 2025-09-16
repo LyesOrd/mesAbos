@@ -1,0 +1,30 @@
+{
+  "family": "mesabos-migrate",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::${AWS_ACCOUNT_ID}:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "mesabos-migrate",
+      "image": "${ECR_REGISTRY}/mesabos-back:latest",
+      "command": ["npx", "prisma", "migrate", "deploy"],
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}:5432/${DB_NAME}"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/mesabos-migrate",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "migrate",
+          "awslogs-create-group": "true"
+        }
+      }
+    }
+  ]
+}

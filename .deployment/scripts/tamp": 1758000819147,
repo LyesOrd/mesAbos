@@ -1,0 +1,276 @@
+{
+    "events": [
+        {
+            "timestamp": 1758000819147,
+            "message": "> back@0.0.1 start:prod",
+            "ingestionTime": 1758000823009
+        },
+        {
+            "timestamp": 1758000819147,
+            "message": "> node dist/src/main",
+            "ingestionTime": 1758000823009
+        },
+        {
+            "timestamp": 1758000822844,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:42 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[NestFactory] \u001b[39m\u001b[32mStarting Nest application...\u001b[39m",
+            "ingestionTime": 1758000823009
+        },
+        {
+            "timestamp": 1758000822954,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:42 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mPassportModule dependencies initialized\u001b[39m\u001b[38;5;3m +110ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000822955,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:42 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mConfigHostModule dependencies initialized\u001b[39m\u001b[38;5;3m +2ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000822955,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:42 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mAppModule dependencies initialized\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823062,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mConfigModule dependencies initialized\u001b[39m\u001b[38;5;3m +106ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mConfigModule dependencies initialized\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mDashboardModule dependencies initialized\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mSubscriptionModule dependencies initialized\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mUsersModule dependencies initialized\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mJwtModule dependencies initialized\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823066,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[InstanceLoader] \u001b[39m\u001b[32mAuthModule dependencies initialized\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823069,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RoutesResolver] \u001b[39m\u001b[32mAppController {/api}:\u001b[39m\u001b[38;5;3m +5ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823071,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api, GET} route\u001b[39m\u001b[38;5;3m +2ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823072,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/health, GET} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823072,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RoutesResolver] \u001b[39m\u001b[32mAuthController {/api/auth}:\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823072,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/auth/register, POST} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823073,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/auth/login, POST} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823073,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/auth/google, POST} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823073,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RoutesResolver] \u001b[39m\u001b[32mDashboardController {/api/dashboard}:\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823074,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard, GET} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823074,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/upcoming-payments, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823074,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/calendar-events, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823075,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/monthly-summary, GET} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823075,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/debug-payments, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823075,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/category-stats, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823075,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/monthly-expenses, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823075,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/frequency-distribution, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823076,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/payment-timeline, GET} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823076,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/dashboard/subscription-trends, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823076,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RoutesResolver] \u001b[39m\u001b[32mSubscriptionController {/api/subscriptions}:\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823076,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/subscriptions, POST} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823076,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/subscriptions, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823077,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/subscriptions/:id, GET} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823077,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/subscriptions/:id, PUT} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823077,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/subscriptions/:id, DELETE} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823077,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RoutesResolver] \u001b[39m\u001b[32mUsersController {/api/users}:\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823077,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/users/me, GET} route\u001b[39m\u001b[38;5;3m +0ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000823078,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:43 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[RouterExplorer] \u001b[39m\u001b[32mMapped {/api/users/me, PATCH} route\u001b[39m\u001b[38;5;3m +1ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758000825063,
+            "message": "\u001b[32m[Nest] 18  - \u001b[39m09/16/2025, 5:33:45 AM \u001b[32m    LOG\u001b[39m \u001b[38;5;3m[NestApplication] \u001b[39m\u001b[32mNest application successfully started\u001b[39m\u001b[38;5;3m +1984ms\u001b[39m",
+            "ingestionTime": 1758000827929
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "\u001b[31m[Nest] 18  - \u001b[39m09/16/2025, 5:36:54 AM \u001b[31m  ERROR\u001b[39m \u001b[38;5;3m[ExceptionsHandler] \u001b[39m\u001b[31m",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "Invalid `prisma.user.findUnique()` invocation:",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "The table `public.User` does not exist in the current database.\u001b[39m",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "PrismaClientKnownRequestError: ",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "Invalid `prisma.user.findUnique()` invocation:",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "The table `public.User` does not exist in the current database.",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at ei.handleRequestError (/back/node_modules/@prisma/client/runtime/library.js:121:7268)",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at ei.handleAndLogRequestError (/back/node_modules/@prisma/client/runtime/library.js:121:6593)",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at ei.request (/back/node_modules/@prisma/client/runtime/library.js:121:6300)",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at async a (/back/node_modules/@prisma/client/runtime/library.js:130:9551)",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at async AuthService.register (/back/dist/src/auth/auth.service.js:64:26)",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at async /back/node_modules/@nestjs/core/router/router-execution-context.js:46:28",
+            "ingestionTime": 1758001017949
+        },
+        {
+            "timestamp": 1758001014491,
+            "message": "    at async /back/node_modules/@nestjs/core/router/router-proxy.js:9:17",
+            "ingestionTime": 1758001017949
+        }
+    ],
+    "nextForwardToken": "f/39204732682922132687475487024535993836902864755988627468/s",
+    "nextBackwardToken": "b/39204728326605362625709439828714647049095725608344485888/s"
+}

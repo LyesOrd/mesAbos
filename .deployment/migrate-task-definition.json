@@ -1,0 +1,34 @@
+{
+  "family": "mesabos-migrate",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::430118830447:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "migration-container",
+      "image": "430118830447.dkr.ecr.eu-west-1.amazonaws.com/mesabos-backend:latest",
+      "essential": true,
+      "command": ["sh", "-c", "npx prisma migrate deploy"],
+      "environment": [
+        {
+          "name": "DATABASE_URL",
+          "value": "postgresql://mesabos_admin:piAjIdPKIRufA2Gjv290@mesabos-db.cjvug5qrzxjg.eu-west-1.rds.amazonaws.com:5432/mesabos_prod"
+        },
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/mesabos-migration",
+          "awslogs-region": "eu-west-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
