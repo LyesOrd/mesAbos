@@ -56,10 +56,19 @@ export class AuthService {
     );
   }
 
-  async updateProfile(data: FormData) {
-    return firstValueFrom(
-      this.http.patch<UserProfile>('http://localhost:3000/users/me', data)
+  async updateProfile(data: FormData): Promise<UserProfile> {
+    const response = await firstValueFrom(
+      this.http.patch<UserProfileResponse>(
+        'http://localhost:3000/users/me',
+        data
+      )
     );
+
+    // Transformer la réponse en incluant l'URL complète de l'avatar
+    return {
+      ...response,
+      avatarUrl: this.buildAvatarUrl(response),
+    };
   }
 
   getToken() {
@@ -99,14 +108,20 @@ export class AuthService {
         .pipe(
           map((profile) => ({
             ...profile,
-            avatarUrl: profile.avatar ?? this.buildAvatarUrl(profile),
+            avatarUrl: this.buildAvatarUrl(profile),
           })),
           catchError(() => of(null))
         );
     });
   }
 
-  private buildAvatarUrl(profile: UserProfileResponse) {
+  private buildAvatarUrl(profile: UserProfileResponse): string {
+    // Si l'utilisateur a un avatar uploadé, on utilise l'URL complète
+    if (profile.avatar) {
+      return `http://localhost:3000${profile.avatar}`;
+    }
+
+    // Sinon, on génère un avatar par défaut
     const reference =
       profile.name?.trim() || profile.email?.trim() || profile.id;
 

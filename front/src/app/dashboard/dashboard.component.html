@@ -3,241 +3,484 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
-<section class="py-8 px-6 max-w-7xl mx-auto">
-  <h2 class="text-3xl font-bold mb-8">{{ message }}</h2>
+<main id="main-content" role="main">
+  <section class="py-8 px-6 max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold mb-8">{{ message }}</h2>
 
-  <div class="grid gap-8 md:grid-cols-3 mb-12">
-    <div class="md:col-span-2">
-      <p-calendar
-        [(ngModel)]="selectedDates"
-        inline="true"
-        selectionMode="multiple"
-      ></p-calendar>
-      <ul class="mt-4 list-disc list-inside">
-        <li *ngFor="let p of upcomingPayments">
-          {{ p.name }} - {{ p.date | date }}
-        </li>
-      </ul>
-    </div>
-    <div class="p-4 rounded-xl border shadow-sm">
-      <div #radarChart class="w-full h-72"></div>
-    </div>
-  </div>
+    <!-- Section des prochains paiements avec design amélioré -->
+    <div class="grid gap-8 lg:grid-cols-3 mb-12">
+      <div class="lg:col-span-2 calendar-container">
+        <h3 class="text-xl font-semibold mb-4">Calendrier des paiements</h3>
 
-  <!-- Tableau des abonnements -->
-  <div class="mb-12 p-6 rounded-xl border shadow-sm">
-    <h3 class="text-xl font-semibold mb-4">Mes abonnements</h3>
-    <p-table
-      [value]="subscriptions"
-      [paginator]="true"
-      [rows]="10"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} abonnements"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      styleClass="p-datatable-gridlines"
-    >
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Nom</th>
-          <th>Montant</th>
-          <th>Fréquence</th>
-          <th>Date de début</th>
-          <th>Catégorie</th>
-          <th>Paiements</th>
-          <th>Actions</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-subscription>
-        <tr>
-          <td>{{ subscription.name }}</td>
-          <td>{{ subscription.amount }}{{ subscription.currency }}</td>
-          <td>{{ getFrequencyLabel(subscription.frequency) }}</td>
-          <td>{{ formatDate(subscription.startDate) }}</td>
-          <td>{{ subscription.category?.name || 'Non catégorisé' }}</td>
-          <td>{{ subscription._count?.payments || 0 }}</td>
-          <td>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-pencil"
-              class="p-button-text p-button-info mr-2"
-              (click)="editSubscription(subscription)"
-              title="Modifier"
-            ></button>
-            <button
-              pButton
-              type="button"
-              icon="pi pi-trash"
-              class="p-button-text p-button-danger"
-              (click)="confirmDelete(subscription)"
-              title="Supprimer"
-            ></button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
+        <!-- Message motivationnel -->
+        <div class="motivational-message">
+          <p>{{ getMotivationalMessage() }}</p>
+        </div>
 
-  <div class="mt-12 p-6 rounded-xl border shadow-sm">
-    <h3 class="text-xl font-semibold mb-4">Ajouter un abonnement</h3>
-    <form class="grid gap-4 md:grid-cols-2" (ngSubmit)="submit()" #form="ngForm">
-      <input
-        pInputText
-        type="text"
-        name="name"
-        [(ngModel)]="subscriptionForm.name"
-        placeholder="Nom"
-        required
-        class="md:col-span-2"
-      />
+        <div class="grid md:grid-cols-2 gap-6 flex-1">
+          <!-- Calendrier -->
+          <div class="calendar-wrapper flex flex-col">
+            <div class="flex-1 flex items-start justify-center">
+              <p-calendar
+                [(ngModel)]="selectedDates"
+                [inline]="true"
+                selectionMode="multiple"
+                [showIcon]="false"
+                [numberOfMonths]="1"
+                dateFormat="dd/mm/yy"
+                (onMonthChange)="onCalendarMonthChange()"
+                (onYearChange)="onCalendarYearChange()"
+              ></p-calendar>
+            </div>
+          </div>
+          <!-- Liste des prochains paiements -->
+          <div class="flex flex-col">
+            <h4 class="text-lg font-medium mb-3 text-gray-700">
+              Prochains paiements
+            </h4>
+            <div class="flex-1">
+              <div
+                class="payments-list"
+                *ngIf="upcomingPayments.length > 0; else noPayments"
+              >
+                <div
+                  *ngFor="let payment of upcomingPayments.slice(0, 5)"
+                  class="payment-item"
+                >
+                  <div class="flex-1">
+                    <div class="font-medium text-gray-800">
+                      {{ payment.name }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      {{ payment.date | date : "dd/MM/yyyy" }}
+                    </div>
+                  </div>
+                  <div class="payment-amount">
+                    -{{ payment.amount || 0 | number : "1.2-2" }}€
+                  </div>
+                </div>
+              </div>
+              <ng-template #noPayments>
+                <div
+                  class="text-center py-8 text-gray-500 flex-1 flex flex-col justify-center"
+                >
+                  <i class="pi pi-calendar-plus text-4xl mb-2"></i>
+                  <p>Aucun paiement prévu</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <p-inputNumber
-        name="amount"
-        [(ngModel)]="subscriptionForm.amount"
-        mode="decimal"
-        [useGrouping]="false"
-        placeholder="Montant"
-      ></p-inputNumber>
-
-      <p-dropdown
-        [options]="frequencies"
-        name="frequency"
-        [(ngModel)]="subscriptionForm.frequency"
-      ></p-dropdown>
-
-      <p-calendar
-        name="startDate"
-        [(ngModel)]="subscriptionForm.startDate"
-        dateFormat="yy-mm-dd"
-      ></p-calendar>
-
-      <p-dropdown
-        [options]="categories"
-        name="category"
-        [(ngModel)]="subscriptionForm.category"
-        placeholder="Catégorie"
-        class="md:col-span-2"
-      ></p-dropdown>
-
-      <button
-        pButton
-        type="submit"
-        label="Ajouter"
-        class="md:col-span-2"
-        [disabled]="form.invalid"
-      ></button>
-    </form>
-  </div>
-</section>
-
-<!-- Modal d'édition -->
-<p-dialog
-  header="Modifier l'abonnement"
-  [(visible)]="displayEditDialog"
-  [modal]="true"
-  [style]="{ width: '50vw' }"
-  [draggable]="false"
-  [resizable]="false"
->
-  <div class="grid gap-4">
-    <div>
-      <label for="editName" class="block text-sm font-medium mb-1">Nom</label>
-      <input
-        id="editName"
-        pInputText
-        type="text"
-        [(ngModel)]="editForm.name"
-        class="w-full"
-        required
-      />
+      <!-- Graphique radar à côté -->
+      <div class="p-6 rounded-xl border shadow-sm bg-white">
+        <h3 class="text-xl font-semibold mb-4 text-center">
+          Répartition des abonnements par catégorie
+        </h3>
+        <div class="radar-chart-container">
+          <div #radarChart style="width: 100%; height: 300px"></div>
+        </div>
+      </div>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <!-- Section des graphiques avec onglets -->
+    <div class="mb-12 p-6 rounded-xl border shadow-sm">
+      <h3 class="text-xl font-semibold mb-4">Analyse de vos abonnements</h3>
+      <p-tabView (onChange)="onTabChange($event)">
+        <p-tabPanel header="Dépenses par catégorie">
+          <div class="chart-container">
+            <div #pieChart style="width: 100%; height: 400px"></div>
+          </div>
+          <div class="mt-4 text-center">
+            <p class="text-lg font-medium">
+              Total mensuel: {{ monthlyExpenses.total | number : "1.2-2" }}€
+            </p>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Répartition par fréquence">
+          <div class="chart-container">
+            <div #doughnutChart style="width: 100%; height: 400px"></div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Évolution des paiements">
+          <div class="chart-container">
+            <div #lineChart style="width: 100%; height: 400px"></div>
+          </div>
+          <div class="mt-4 text-center text-sm text-gray-600">
+            <p>
+              Historique des 6 derniers mois et prévision des 6 prochains mois
+            </p>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel header="Nouveaux abonnements">
+          <div class="chart-container">
+            <div #barChart style="width: 100%; height: 400px"></div>
+          </div>
+          <div class="mt-4 text-center text-sm text-gray-600">
+            <p>Évolution de vos nouveaux abonnements au fil du temps</p>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+
+    <!-- Tableau des abonnements -->
+    <div class="mb-12 p-6 rounded-xl border shadow-sm">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold">Mes abonnements</h3>
+        <button
+          pButton
+          type="button"
+          label="Ajouter une dépense"
+          icon="pi pi-plus"
+          class="p-button-primary"
+          (click)="openAddDialog()"
+        ></button>
+      </div>
+      <p-table
+        [value]="subscriptions"
+        [paginator]="true"
+        [rows]="10"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Affichage de {first} à {last} sur {totalRecords} abonnements"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-gridlines"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Montant</th>
+            <th scope="col">Fréquence</th>
+            <th scope="col">Date de début</th>
+            <th scope="col">Date de fin</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col">Paiements</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-subscription>
+          <tr>
+            <td>{{ subscription.name }}</td>
+            <td>{{ subscription.amount }}{{ subscription.currency }}</td>
+            <td>{{ getFrequencyLabel(subscription.frequency) }}</td>
+            <td>{{ formatDate(subscription.startDate) }}</td>
+            <td>
+              {{
+                subscription.endDate
+                  ? formatDate(subscription.endDate)
+                  : "Pas de fin"
+              }}
+            </td>
+            <td>{{ subscription.category?.name || "Non catégorisé" }}</td>
+            <td>{{ subscription._count?.payments || 0 }}</td>
+            <td>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                class="p-button-text p-button-info mr-2"
+                (click)="editSubscription(subscription)"
+                title="Modifier"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-text p-button-danger"
+                (click)="confirmDelete(subscription)"
+                title="Supprimer"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </section>
+
+  <!-- Modal d'ajout -->
+  <p-dialog
+    header="Ajouter une nouvelle dépense"
+    [(visible)]="displayAddDialog"
+    [modal]="true"
+    [style]="{ width: '60vw', minWidth: '320px' }"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="custom-dialog"
+  >
+    <div class="grid gap-6">
       <div>
-        <label for="editAmount" class="block text-sm font-medium mb-1">Montant</label>
-        <p-inputNumber
-          id="editAmount"
-          [(ngModel)]="editForm.amount"
-          mode="decimal"
-          [useGrouping]="false"
+        <label
+          for="addName"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Nom de l'abonnement <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="addName"
+          pInputText
+          type="text"
+          [(ngModel)]="addForm.name"
           class="w-full"
-        ></p-inputNumber>
+          placeholder="Ex: Netflix, Spotify..."
+          required
+        />
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            for="addAmount"
+            class="block text-sm font-medium mb-2 text-gray-700"
+          >
+            Montant <span class="text-red-500">*</span>
+          </label>
+          <p-inputNumber
+            id="addAmount"
+            [(ngModel)]="addForm.amount"
+            mode="decimal"
+            [useGrouping]="false"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            suffix=" €"
+            class="w-full"
+            placeholder="0.00"
+          ></p-inputNumber>
+        </div>
+
+        <div>
+          <label
+            for="addFrequency"
+            class="block text-sm font-medium mb-2 text-gray-700"
+          >
+            Fréquence <span class="text-red-500">*</span>
+          </label>
+          <p-dropdown
+            id="addFrequency"
+            [options]="frequencies"
+            [(ngModel)]="addForm.frequency"
+            class="w-full"
+            placeholder="Sélectionner la fréquence"
+          ></p-dropdown>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label
+            for="addStartDate"
+            class="block text-sm font-medium mb-2 text-gray-700"
+          >
+            Date de début <span class="text-red-500">*</span>
+          </label>
+          <p-calendar
+            id="addStartDate"
+            [(ngModel)]="addForm.startDate"
+            dateFormat="dd/mm/yy"
+            class="w-full"
+            placeholder="Sélectionner une date"
+            [showIcon]="true"
+          ></p-calendar>
+        </div>
+
+        <div>
+          <label
+            for="addEndDate"
+            class="block text-sm font-medium mb-2 text-gray-700"
+          >
+            Date de fin <span class="text-gray-500 text-xs">(optionnel)</span>
+          </label>
+          <p-calendar
+            id="addEndDate"
+            [(ngModel)]="addForm.endDate"
+            dateFormat="dd/mm/yy"
+            class="w-full"
+            placeholder="Pas de date de fin"
+            [showClear]="true"
+            [showIcon]="true"
+          ></p-calendar>
+        </div>
       </div>
 
       <div>
-        <label for="editFrequency" class="block text-sm font-medium mb-1">Fréquence</label>
+        <label
+          for="addCategory"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Catégorie
+        </label>
         <p-dropdown
-          id="editFrequency"
-          [options]="frequencies"
-          [(ngModel)]="editForm.frequency"
-          class="w-full"
-        ></p-dropdown>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label for="editStartDate" class="block text-sm font-medium mb-1">Date de début</label>
-        <p-calendar
-          id="editStartDate"
-          [(ngModel)]="editForm.startDate"
-          dateFormat="yy-mm-dd"
-          class="w-full"
-        ></p-calendar>
-      </div>
-
-      <div>
-        <label for="editEndDate" class="block text-sm font-medium mb-1">Date de fin</label>
-        <p-calendar
-          id="editEndDate"
-          [(ngModel)]="editForm.endDate"
-          dateFormat="yy-mm-dd"
+          id="addCategory"
+          [options]="categories"
+          [(ngModel)]="addForm.category"
+          placeholder="Choisir une catégorie"
           class="w-full"
           [showClear]="true"
-        ></p-calendar>
+        ></p-dropdown>
+      </div>
+
+      <div>
+        <label
+          for="addNotes"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Notes <span class="text-gray-500 text-xs">(optionnel)</span>
+        </label>
+        <textarea
+          id="addNotes"
+          [(ngModel)]="addForm.notes"
+          rows="4"
+          class="w-full p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Ajoutez des notes sur cet abonnement..."
+        ></textarea>
       </div>
     </div>
 
-    <div>
-      <label for="editCategory" class="block text-sm font-medium mb-1">Catégorie</label>
-      <p-dropdown
-        id="editCategory"
-        [options]="categories"
-        [(ngModel)]="editForm.category"
-        placeholder="Catégorie"
-        class="w-full"
-        [showClear]="true"
-      ></p-dropdown>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-3">
+        <button
+          pButton
+          type="button"
+          label="Annuler"
+          icon="pi pi-times"
+          class="p-button-text p-button-secondary"
+          (click)="closeAddDialog()"
+        ></button>
+        <button
+          pButton
+          type="button"
+          label="Ajouter l'abonnement"
+          icon="pi pi-check"
+          class="p-button-primary"
+          (click)="saveNewSubscription()"
+          [disabled]="!isAddFormValid()"
+        ></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Modal d'édition -->
+  <p-dialog
+    header="Modifier l'abonnement"
+    [(visible)]="displayEditDialog"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="grid gap-4">
+      <div>
+        <label for="editName" class="block text-sm font-medium mb-1">Nom</label>
+        <input
+          id="editName"
+          pInputText
+          type="text"
+          [(ngModel)]="editForm.name"
+          class="w-full"
+          required
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="editAmount" class="block text-sm font-medium mb-1"
+            >Montant</label
+          >
+          <p-inputNumber
+            id="editAmount"
+            [(ngModel)]="editForm.amount"
+            mode="decimal"
+            [useGrouping]="false"
+            class="w-full"
+          ></p-inputNumber>
+        </div>
+
+        <div>
+          <label for="editFrequency" class="block text-sm font-medium mb-1"
+            >Fréquence</label
+          >
+          <p-dropdown
+            id="editFrequency"
+            [options]="frequencies"
+            [(ngModel)]="editForm.frequency"
+            class="w-full"
+          ></p-dropdown>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="editStartDate" class="block text-sm font-medium mb-1"
+            >Date de début</label
+          >
+          <p-calendar
+            id="editStartDate"
+            [(ngModel)]="editForm.startDate"
+            dateFormat="yy-mm-dd"
+            class="w-full"
+          ></p-calendar>
+        </div>
+
+        <div>
+          <label for="editEndDate" class="block text-sm font-medium mb-1"
+            >Date de fin</label
+          >
+          <p-calendar
+            id="editEndDate"
+            [(ngModel)]="editForm.endDate"
+            dateFormat="yy-mm-dd"
+            class="w-full"
+            [showClear]="true"
+          ></p-calendar>
+        </div>
+      </div>
+
+      <div>
+        <label for="editCategory" class="block text-sm font-medium mb-1"
+          >Catégorie</label
+        >
+        <p-dropdown
+          id="editCategory"
+          [options]="categories"
+          [(ngModel)]="editForm.category"
+          placeholder="Catégorie"
+          class="w-full"
+          [showClear]="true"
+        ></p-dropdown>
+      </div>
+
+      <div>
+        <label for="editNotes" class="block text-sm font-medium mb-1"
+          >Notes</label
+        >
+        <textarea
+          id="editNotes"
+          [(ngModel)]="editForm.notes"
+          rows="3"
+          class="w-full p-2 border rounded-md"
+          placeholder="Notes optionnelles..."
+        ></textarea>
+      </div>
     </div>
 
-    <div>
-      <label for="editNotes" class="block text-sm font-medium mb-1">Notes</label>
-      <textarea
-        id="editNotes"
-        [(ngModel)]="editForm.notes"
-        rows="3"
-        class="w-full p-2 border rounded-md"
-        placeholder="Notes optionnelles..."
-      ></textarea>
-    </div>
-  </div>
-
-  <ng-template pTemplate="footer">
-    <button
-      pButton
-      type="button"
-      label="Annuler"
-      icon="pi pi-times"
-      class="p-button-text"
-      (click)="displayEditDialog = false"
-    ></button>
-    <button
-      pButton
-      type="button"
-      label="Sauvegarder"
-      icon="pi pi-check"
-      (click)="saveSubscription()"
-    ></button>
-  </ng-template>
-</p-dialog>
-
+    <ng-template pTemplate="footer">
+      <button
+        pButton
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="displayEditDialog = false"
+      ></button>
+      <button
+        pButton
+        type="button"
+        label="Sauvegarder"
+        icon="pi pi-check"
+        (click)="saveSubscription()"
+      ></button>
+    </ng-template>
+  </p-dialog>
+</main>

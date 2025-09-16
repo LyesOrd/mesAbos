@@ -1,0 +1,127 @@
+/* Fix pour uniformiser les champs de saisie */
+.p-inputgroup {
+  width: 100% !important;
+}
+
+.p-inputgroup .p-inputtext,
+.p-inputgroup .p-password,
+.p-inputgroup .p-password .p-inputtext {
+  width: 100% !important;
+  flex: 1;
+}
+
+/* Assurer que le champ mot de passe a la même largeur */
+::ng-deep .p-password {
+  width: 100% !important;
+  display: flex !important;
+}
+
+::ng-deep .p-password .p-inputtext {
+  width: 100% !important;
+  flex: 1;
+}
+
+/* Fix pour le composant password de PrimeNG */
+::ng-deep .p-password-input {
+  width: 100% !important;
+}
+
+/* Animation pour les champs au focus */
+.p-inputgroup:focus-within {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+
+/* Style pour les erreurs */
+.error-message {
+  background: linear-gradient(45deg, #fee2e2, #fecaca);
+  border-left: 4px solid #ef4444;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Amélioration du bouton d'inscription - Plus spécifique pour surcharger PrimeNG */
+::ng-deep .register-button.p-button {
+  background: linear-gradient(45deg, #10b981, #059669) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4) !important;
+  transform: perspective(1px) translateZ(0);
+  transition: all 0.3s ease-in-out;
+}
+
+::ng-deep .register-button.p-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5) !important;
+  background: linear-gradient(45deg, #059669, #047857) !important;
+}
+
+::ng-deep .register-button.p-button:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  background: linear-gradient(45deg, #9ca3af, #6b7280) !important;
+}
+
+/* Style pour le conteneur principal */
+.register-container {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Animation d'entrée pour le formulaire */
+.form-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Style pour les icônes dans les input groups */
+::ng-deep .p-inputgroup-addon {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+  color: #16a34a !important;
+}
+
+/* Style spécial pour les champs de mot de passe */
+::ng-deep .p-password .p-password-panel {
+  margin-top: 0.5rem;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .register-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* Validation visuelle pour les mots de passe qui correspondent */
+.password-match {
+  border-color: #10b981 !important;
+}
+
+.password-mismatch {
+  border-color: #ef4444 !important;
+}
