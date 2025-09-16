@@ -26,7 +26,17 @@
 
   <!-- Tableau des abonnements -->
   <div class="mb-12 p-6 rounded-xl border shadow-sm">
-    <h3 class="text-xl font-semibold mb-4">Mes abonnements</h3>
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-semibold">Mes abonnements</h3>
+      <button
+        pButton
+        type="button"
+        label="Ajouter une dépense"
+        icon="pi pi-plus"
+        class="p-button-primary"
+        (click)="openAddDialog()"
+      ></button>
+    </div>
     <p-table
       [value]="subscriptions"
       [paginator]="true"
@@ -42,6 +52,7 @@
           <th>Montant</th>
           <th>Fréquence</th>
           <th>Date de début</th>
+          <th>Date de fin</th>
           <th>Catégorie</th>
           <th>Paiements</th>
           <th>Actions</th>
@@ -53,7 +64,14 @@
           <td>{{ subscription.amount }}{{ subscription.currency }}</td>
           <td>{{ getFrequencyLabel(subscription.frequency) }}</td>
           <td>{{ formatDate(subscription.startDate) }}</td>
-          <td>{{ subscription.category?.name || 'Non catégorisé' }}</td>
+          <td>
+            {{
+              subscription.endDate
+                ? formatDate(subscription.endDate)
+                : "Pas de fin"
+            }}
+          </td>
+          <td>{{ subscription.category?.name || "Non catégorisé" }}</td>
           <td>{{ subscription._count?.payments || 0 }}</td>
           <td>
             <button
@@ -77,58 +95,165 @@
       </ng-template>
     </p-table>
   </div>
+</section>
 
-  <div class="mt-12 p-6 rounded-xl border shadow-sm">
-    <h3 class="text-xl font-semibold mb-4">Ajouter un abonnement</h3>
-    <form class="grid gap-4 md:grid-cols-2" (ngSubmit)="submit()" #form="ngForm">
+<!-- Modal d'ajout -->
+<p-dialog
+  header="Ajouter une nouvelle dépense"
+  [(visible)]="displayAddDialog"
+  [modal]="true"
+  [style]="{ width: '60vw', minWidth: '320px' }"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="custom-dialog"
+>
+  <div class="grid gap-6">
+    <div>
+      <label for="addName" class="block text-sm font-medium mb-2 text-gray-700">
+        Nom de l'abonnement <span class="text-red-500">*</span>
+      </label>
       <input
+        id="addName"
         pInputText
         type="text"
-        name="name"
-        [(ngModel)]="subscriptionForm.name"
-        placeholder="Nom"
+        [(ngModel)]="addForm.name"
+        class="w-full"
+        placeholder="Ex: Netflix, Spotify..."
         required
-        class="md:col-span-2"
       />
+    </div>
 
-      <p-inputNumber
-        name="amount"
-        [(ngModel)]="subscriptionForm.amount"
-        mode="decimal"
-        [useGrouping]="false"
-        placeholder="Montant"
-      ></p-inputNumber>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label
+          for="addAmount"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Montant <span class="text-red-500">*</span>
+        </label>
+        <p-inputNumber
+          id="addAmount"
+          [(ngModel)]="addForm.amount"
+          mode="decimal"
+          [useGrouping]="false"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          suffix=" €"
+          class="w-full"
+          placeholder="0.00"
+        ></p-inputNumber>
+      </div>
 
+      <div>
+        <label
+          for="addFrequency"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Fréquence <span class="text-red-500">*</span>
+        </label>
+        <p-dropdown
+          id="addFrequency"
+          [options]="frequencies"
+          [(ngModel)]="addForm.frequency"
+          class="w-full"
+          placeholder="Sélectionner la fréquence"
+        ></p-dropdown>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label
+          for="addStartDate"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Date de début <span class="text-red-500">*</span>
+        </label>
+        <p-calendar
+          id="addStartDate"
+          [(ngModel)]="addForm.startDate"
+          dateFormat="dd/mm/yy"
+          class="w-full"
+          placeholder="Sélectionner une date"
+          [showIcon]="true"
+        ></p-calendar>
+      </div>
+
+      <div>
+        <label
+          for="addEndDate"
+          class="block text-sm font-medium mb-2 text-gray-700"
+        >
+          Date de fin <span class="text-gray-500 text-xs">(optionnel)</span>
+        </label>
+        <p-calendar
+          id="addEndDate"
+          [(ngModel)]="addForm.endDate"
+          dateFormat="dd/mm/yy"
+          class="w-full"
+          placeholder="Pas de date de fin"
+          [showClear]="true"
+          [showIcon]="true"
+        ></p-calendar>
+      </div>
+    </div>
+
+    <div>
+      <label
+        for="addCategory"
+        class="block text-sm font-medium mb-2 text-gray-700"
+      >
+        Catégorie
+      </label>
       <p-dropdown
-        [options]="frequencies"
-        name="frequency"
-        [(ngModel)]="subscriptionForm.frequency"
-      ></p-dropdown>
-
-      <p-calendar
-        name="startDate"
-        [(ngModel)]="subscriptionForm.startDate"
-        dateFormat="yy-mm-dd"
-      ></p-calendar>
-
-      <p-dropdown
+        id="addCategory"
         [options]="categories"
-        name="category"
-        [(ngModel)]="subscriptionForm.category"
-        placeholder="Catégorie"
-        class="md:col-span-2"
+        [(ngModel)]="addForm.category"
+        placeholder="Choisir une catégorie"
+        class="w-full"
+        [showClear]="true"
       ></p-dropdown>
+    </div>
 
+    <div>
+      <label
+        for="addNotes"
+        class="block text-sm font-medium mb-2 text-gray-700"
+      >
+        Notes <span class="text-gray-500 text-xs">(optionnel)</span>
+      </label>
+      <textarea
+        id="addNotes"
+        [(ngModel)]="addForm.notes"
+        rows="4"
+        class="w-full p-3 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Ajoutez des notes sur cet abonnement..."
+      ></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
       <button
         pButton
-        type="submit"
-        label="Ajouter"
-        class="md:col-span-2"
-        [disabled]="form.invalid"
+        type="button"
+        label="Annuler"
+        icon="pi pi-times"
+        class="p-button-text p-button-secondary"
+        (click)="closeAddDialog()"
       ></button>
-    </form>
-  </div>
-</section>
+      <button
+        pButton
+        type="button"
+        label="Ajouter l'abonnement"
+        icon="pi pi-check"
+        class="p-button-primary"
+        (click)="saveNewSubscription()"
+        [disabled]="!isAddFormValid()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
 
 <!-- Modal d'édition -->
 <p-dialog
@@ -154,7 +279,9 @@
 
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label for="editAmount" class="block text-sm font-medium mb-1">Montant</label>
+        <label for="editAmount" class="block text-sm font-medium mb-1"
+          >Montant</label
+        >
         <p-inputNumber
           id="editAmount"
           [(ngModel)]="editForm.amount"
@@ -165,7 +292,9 @@
       </div>
 
       <div>
-        <label for="editFrequency" class="block text-sm font-medium mb-1">Fréquence</label>
+        <label for="editFrequency" class="block text-sm font-medium mb-1"
+          >Fréquence</label
+        >
         <p-dropdown
           id="editFrequency"
           [options]="frequencies"
@@ -177,7 +306,9 @@
 
     <div class="grid grid-cols-2 gap-4">
       <div>
-        <label for="editStartDate" class="block text-sm font-medium mb-1">Date de début</label>
+        <label for="editStartDate" class="block text-sm font-medium mb-1"
+          >Date de début</label
+        >
         <p-calendar
           id="editStartDate"
           [(ngModel)]="editForm.startDate"
@@ -187,7 +318,9 @@
       </div>
 
       <div>
-        <label for="editEndDate" class="block text-sm font-medium mb-1">Date de fin</label>
+        <label for="editEndDate" class="block text-sm font-medium mb-1"
+          >Date de fin</label
+        >
         <p-calendar
           id="editEndDate"
           [(ngModel)]="editForm.endDate"
@@ -199,7 +332,9 @@
     </div>
 
     <div>
-      <label for="editCategory" class="block text-sm font-medium mb-1">Catégorie</label>
+      <label for="editCategory" class="block text-sm font-medium mb-1"
+        >Catégorie</label
+      >
       <p-dropdown
         id="editCategory"
         [options]="categories"
@@ -211,7 +346,9 @@
     </div>
 
     <div>
-      <label for="editNotes" class="block text-sm font-medium mb-1">Notes</label>
+      <label for="editNotes" class="block text-sm font-medium mb-1"
+        >Notes</label
+      >
       <textarea
         id="editNotes"
         [(ngModel)]="editForm.notes"
@@ -240,4 +377,3 @@
     ></button>
   </ng-template>
 </p-dialog>
-
