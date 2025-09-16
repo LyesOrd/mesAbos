@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
 import { ThemeService } from '../services/theme.service';
+import { environment } from '../../environments/environment';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
@@ -134,7 +135,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   paymentTimeline: Record<string, number> = {};
   subscriptionTrends: Record<string, number> = {};
 
-  private readonly apiUrl = 'http://localhost:3000';
+  private readonly apiUrl = environment.apiUrl;
 
   categories = [
     { label: 'Streaming', value: 'Streaming' },

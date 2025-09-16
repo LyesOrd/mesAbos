@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, defer, firstValueFrom, map, of } from 'rxjs';
+import { environment } from '../environments/environment';
 
 interface UserProfileResponse {
   id: string;
@@ -26,10 +27,11 @@ export interface UserProfile {
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenKey = 'token';
+  private readonly apiUrl = environment.apiUrl;
 
   async login(email: string, password: string) {
     const res = await firstValueFrom(
-      this.http.post<{ token: string }>('http://localhost:3000/auth/login', {
+      this.http.post<{ token: string }>(`${this.apiUrl}/auth/login`, {
         email,
         password,
       })
@@ -39,7 +41,7 @@ export class AuthService {
 
   async googleLogin(token: string) {
     const res = await firstValueFrom(
-      this.http.post<{ token: string }>('http://localhost:3000/auth/google', {
+      this.http.post<{ token: string }>(`${this.apiUrl}/auth/google`, {
         token,
       })
     );
@@ -48,7 +50,7 @@ export class AuthService {
 
   async register(name: string, email: string, password: string) {
     return firstValueFrom(
-      this.http.post('http://localhost:3000/auth/register', {
+      this.http.post(`${this.apiUrl}/auth/register`, {
         name,
         email,
         password,
@@ -59,7 +61,7 @@ export class AuthService {
   async updateProfile(data: FormData): Promise<UserProfile> {
     const response = await firstValueFrom(
       this.http.patch<UserProfileResponse>(
-        'http://localhost:3000/users/me',
+        `${this.apiUrl}/users/me`,
         data
       )
     );
@@ -104,7 +106,7 @@ export class AuthService {
       }
 
       return this.http
-        .get<UserProfileResponse>('http://localhost:3000/users/me')
+        .get<UserProfileResponse>(`${this.apiUrl}/users/me`)
         .pipe(
           map((profile) => ({
             ...profile,
@@ -118,7 +120,7 @@ export class AuthService {
   private buildAvatarUrl(profile: UserProfileResponse): string {
     // Si l'utilisateur a un avatar uploadé, on utilise l'URL complète
     if (profile.avatar) {
-      return `http://localhost:3000${profile.avatar}`;
+      return `${this.apiUrl}${profile.avatar}`;
     }
 
     // Sinon, on génère un avatar par défaut
