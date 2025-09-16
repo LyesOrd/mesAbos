@@ -7,8 +7,7 @@ import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { MessageModule } from 'primeng/message';
+import { InputGroupModule } from 'primeng/inputgroup';
 
 @Component({
   selector: 'app-register',
@@ -21,10 +20,10 @@ import { MessageModule } from 'primeng/message';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    CardModule,
-    MessageModule,
+    InputGroupModule,
   ],
   templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   name = '';

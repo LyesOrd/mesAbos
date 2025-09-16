@@ -583,22 +583,61 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       .subscribe((stats) => {
         const labels = this.categories.map((c) => c.value);
         const data = labels.map((l) => stats[l] || 0);
-        const maxVal = Math.max(...data, 1);
+        const maxVal = Math.max(...data, 5);
         this.radarOptions = {
-          title: { text: 'Répartition des abonnements' },
-          legend: { data: ['Subscriptions'] },
-          tooltip: {},
+          tooltip: {
+            trigger: 'item',
+          },
+          legend: {
+            show: false,
+          },
           radar: {
-            indicator: labels.map((name) => ({ name, max: maxVal })),
+            center: ['50%', '50%'],
+            radius: '70%',
+            splitNumber: 4,
+            splitArea: {
+              areaStyle: {
+                color: [
+                  'rgba(16, 185, 129, 0.05)',
+                  'transparent',
+                  'rgba(16, 185, 129, 0.05)',
+                  'transparent',
+                ],
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: '#e5e7eb',
+              },
+            },
+            axisLine: {
+              lineStyle: {
+                color: '#d1d5db',
+              },
+            },
+            indicator: labels.map((name) => ({
+              name: name,
+              max: maxVal,
+            })),
           },
           series: [
             {
-              name: 'Streaming',
+              name: 'Abonnements',
               type: 'radar',
               data: [
                 {
                   value: data,
-                  name: 'Streaming',
+                  name: 'Mes abonnements',
+                  lineStyle: {
+                    color: '#10b981',
+                    width: 2,
+                  },
+                  areaStyle: {
+                    color: 'rgba(16, 185, 129, 0.2)',
+                  },
+                  itemStyle: {
+                    color: '#10b981',
+                  },
                 },
               ],
             },
