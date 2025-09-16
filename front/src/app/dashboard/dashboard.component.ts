@@ -73,8 +73,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   subscriptions: Subscription[] = [];
   selectedSubscription: Subscription | null = null;
   displayEditDialog = false;
+  displayAddDialog = false;
   displayDeleteDialog = false;
-  
+
   private readonly apiUrl = 'http://localhost:3000';
 
   categories = [
@@ -98,6 +99,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     category: '',
   };
 
+  addForm = {
+    name: '',
+    amount: 0,
+    frequency: 'MONTHLY',
+    startDate: new Date(),
+    endDate: null as Date | null,
+    category: '',
+    notes: '',
+  };
+
   editForm = {
     id: '',
     name: '',
@@ -113,7 +124,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private readonly http: HttpClient,
     private readonly auth: AuthService,
     private readonly confirmationService: ConfirmationService,
-    private readonly messageService: MessageService,
+    private readonly messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -187,6 +198,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       });
   }
 
+  // Ancienne méthode submit - remplacée par saveNewSubscription
+  /*
   submit() {
     const token = this.auth.getToken();
     const body = { ...this.subscriptionForm };
@@ -212,6 +225,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         });
       });
   }
+  */
 
   loadSubscriptions() {
     const token = this.auth.getToken();
@@ -254,9 +268,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     };
 
     this.http
-      .put(`${this.apiUrl}/subscriptions/${this.selectedSubscription.id}`, body, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .put(
+        `${this.apiUrl}/subscriptions/${this.selectedSubscription.id}`,
+        body,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .subscribe(() => {
         this.displayEditDialog = false;
         this.loadSubscriptions();
@@ -307,5 +325,72 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('fr-FR');
+  }
+
+  openAddDialog() {
+    this.addForm = {
+      name: '',
+      amount: 0,
+      frequency: 'MONTHLY',
+      startDate: new Date(),
+      endDate: null,
+      category: '',
+      notes: '',
+    };
+    this.displayAddDialog = true;
+  }
+
+  closeAddDialog() {
+    this.displayAddDialog = false;
+  }
+
+  isAddFormValid(): boolean {
+    return !!(
+      this.addForm.name &&
+      this.addForm.amount > 0 &&
+      this.addForm.frequency &&
+      this.addForm.startDate
+    );
+  }
+
+  saveNewSubscription() {
+    if (!this.isAddFormValid()) return;
+
+    const token = this.auth.getToken();
+    const body = {
+      name: this.addForm.name,
+      amount: this.addForm.amount,
+      frequency: this.addForm.frequency,
+      startDate: this.addForm.startDate.toISOString(),
+      endDate: this.addForm.endDate?.toISOString() || null,
+      category: this.addForm.category || null,
+      notes: this.addForm.notes || null,
+    };
+
+    this.http
+      .post(`${this.apiUrl}/subscriptions`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .subscribe({
+        next: () => {
+          this.displayAddDialog = false;
+          this.loadSubscriptions();
+          this.loadUpcoming();
+          this.loadStats();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Succès',
+            detail: 'Abonnement ajouté avec succès',
+          });
+        },
+        error: (error) => {
+          console.error("Erreur lors de l'ajout:", error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erreur',
+            detail: "Erreur lors de l'ajout de l'abonnement",
+          });
+        },
+      });
   }
 }
