@@ -1,5 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 
+export type Theme = 'light' | 'dark';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -32,5 +34,22 @@ export class ThemeService {
 
     // Sauvegarder dans localStorage
     localStorage.setItem('dark-mode', JSON.stringify(isDark));
+  }
+
+  // Méthodes compatibles avec l'ancien composant theme-toggle
+  get theme() {
+    return this._isDarkMode() ? 'dark' : 'light';
+  }
+
+  setTheme(theme: Theme): void {
+    this.setDarkMode(theme === 'dark');
+  }
+
+  getThemeLabel(): string {
+    return this._isDarkMode() ? 'Thème sombre' : 'Thème clair';
+  }
+
+  getThemeIcon(): string {
+    return this._isDarkMode() ? 'pi pi-moon' : 'pi pi-sun';
   }
 }
