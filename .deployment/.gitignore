@@ -1,0 +1,12 @@
+# Fichiers temporaires de déploiement
+*-resolved.json
+*-final.json
+temp-*.json
+
+# Logs de déploiement
+deployment.log
+*.log
+
+# Fichiers de configuration avec secrets (si créés localement)
+.env.local
+config.local.env

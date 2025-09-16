@@ -1,0 +1,64 @@
+{
+  "family": "mesabos-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "mesabos-backend",
+      "image": "${ECR_REGISTRY}/mesabos-back:latest",
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "${NODE_ENV}"
+        },
+        {
+          "name": "DATABASE_URL",
+          "value": "postgresql://${DB_USERNAME}:${DB_PASSWORD}@${DB_ENDPOINT}:5432/${DB_NAME}"
+        },
+        {
+          "name": "JWT_SECRET",
+          "value": "${JWT_SECRET}"
+        },
+        {
+          "name": "PORT",
+          "value": "3000"
+        },
+        {
+          "name": "GOOGLE_CLIENT_ID",
+          "value": "${GOOGLE_CLIENT_ID}"
+        },
+        {
+          "name": "GOOGLE_CLIENT_SECRET",
+          "value": "${GOOGLE_CLIENT_SECRET}"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/${APP_NAME}",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "backend",
+          "awslogs-create-group": "true"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/ || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+}

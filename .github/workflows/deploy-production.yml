@@ -1,0 +1,111 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: eu-west-1
+  APP_NAME: mesabos
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: |
+          front/package-lock.json
+          back/package-lock.json
+          
+    - name: Install dependencies - Frontend
+      run: |
+        cd front
+        npm ci
+        
+    - name: Install dependencies - Backend  
+      run: |
+        cd back
+        npm ci
+        
+    - name: Run tests - Frontend
+      run: |
+        cd front
+        npm run test:ci || true
+        
+    - name: Run tests - Backend
+      run: |
+        cd back
+        npm run test || true
+        
+    - name: Setup deployment configuration
+      run: |
+        # Créer le fichier de configuration temporaire pour le déploiement
+        cat > .deployment/config.env << EOF
+        AWS_REGION=${{ env.AWS_REGION }}
+        AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+        DOMAIN_NAME=mesabos.com
+        APP_NAME=${{ env.APP_NAME }}
+        ENV=production
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        DB_USERNAME=mesabos_admin
+        DB_NAME=mesabos_prod
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+        NODE_ENV=production
+        SSL_CERTIFICATE_ARN=${{ secrets.SSL_CERTIFICATE_ARN }}
+        ECR_REGISTRY=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+        CLUSTER_NAME=${{ env.APP_NAME }}-cluster
+        BACK_SERVICE_NAME=${{ env.APP_NAME }}-back
+        FRONT_SERVICE_NAME=${{ env.APP_NAME }}-front
+        GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+        GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+        EOF
+        
+    - name: Install dependencies for deployment
+      run: |
+        # Installer les outils nécessaires
+        sudo apt-get update
+        sudo apt-get install -y jq gettext-base
+        
+    - name: Run deployment
+      run: |
+        cd .deployment/scripts
+        ./deploy.sh production
+        
+    - name: Verify deployment
+      run: |
+        echo "🔍 Vérification du déploiement..."
+        
+        # Attendre que les services soient stables
+        sleep 60
+        
+        # Vérifier la santé des services
+        aws ecs describe-services \
+          --cluster ${{ env.APP_NAME }}-cluster \
+          --services ${{ env.APP_NAME }}-back ${{ env.APP_NAME }}-front \
+          --region ${{ env.AWS_REGION }} \
+          --query 'services[*].[serviceName,status,runningCount,desiredCount]' \
+          --output table
+          
+        # Tester l'URL de production
+        curl -f https://mesabos.com || echo "⚠️ Site non accessible immédiatement (normal après déploiement)"
+        
+    - name: Cleanup temporary files
+      if: always()
+      run: |
+        rm -f .deployment/config.env

@@ -1,0 +1,38 @@
+{
+  "family": "mesabos-frontend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "containerDefinitions": [
+    {
+      "name": "mesabos-frontend",
+      "image": "${ECR_REGISTRY}/mesabos-front:latest",
+      "portMappings": [
+        {
+          "containerPort": 4200,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/${APP_NAME}",
+          "awslogs-region": "${AWS_REGION}",
+          "awslogs-stream-prefix": "frontend",
+          "awslogs-create-group": "true"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:4200/ || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      }
+    }
+  ]
+}

@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "CHROME_BIN=$(command -v chromium-browser || command -v chromium || command -v google-chrome-stable || command -v google-chrome) ng test --watch=false --browsers ChromeHeadlessCI",
+    "test:ci": "ng test --watch=false --browsers ChromeHeadless --code-coverage",
     "sonar": "sonar-scanner"
   },
   "private": true,
