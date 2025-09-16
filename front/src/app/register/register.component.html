@@ -1,63 +1,170 @@
 <app-navbar></app-navbar>
-<section class="flex items-center justify-center min-h-screen bg-surface-50 p-6">
-  <p-card header="Créer un compte" class="w-full max-w-md">
-    <form (ngSubmit)="submit()" #form="ngForm" class="flex flex-col gap-4">
-      <p-message *ngIf="error" severity="error" [text]="error"></p-message>
 
-      <div class="flex flex-col gap-2">
-        <label for="name" class="font-medium">Nom</label>
-        <input
-          pInputText
-          id="name"
-          name="name"
-          [(ngModel)]="name"
-          required
-          class="w-full"
-        />
+<section
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 via-surface-0 to-primary-100 dark:from-surface-900 dark:to-surface-800 p-6"
+>
+  <div
+    class="register-container form-container w-full max-w-md bg-surface-0/90 dark:bg-surface-900/90 rounded-3xl shadow-2xl p-8 flex flex-col gap-6"
+  >
+    <div class="flex flex-col items-center gap-4 text-center">
+      <div
+        class="w-20 h-20 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg"
+      >
+        <i class="pi pi-user-plus text-3xl text-white"></i>
+      </div>
+      <div>
+        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">
+          Rejoignez-nous !
+        </h2>
+        <p class="text-surface-600 dark:text-surface-300">
+          Créez votre compte MesAbos gratuitement
+        </p>
+      </div>
+    </div>
+
+    <div
+      *ngIf="error"
+      class="error-message p-4 bg-red-100 text-red-700 rounded-xl border border-red-200"
+    >
+      <div class="flex items-center gap-2">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>{{ error }}</span>
+      </div>
+    </div>
+
+    <form (ngSubmit)="submit()" #form="ngForm" class="flex flex-col gap-5">
+      <div class="flex flex-col gap-3">
+        <label
+          for="name"
+          class="font-semibold text-gray-700 dark:text-gray-300"
+        >
+          Nom complet
+        </label>
+        <div class="p-inputgroup w-full">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user"></i>
+          </span>
+          <input
+            pInputText
+            id="name"
+            name="name"
+            [(ngModel)]="name"
+            required
+            placeholder="Votre nom complet"
+            class="w-full"
+          />
+        </div>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label for="email" class="font-medium">Email</label>
-        <input
-          pInputText
-          id="email"
-          name="email"
-          type="email"
-          [(ngModel)]="email"
-          required
-          class="w-full"
-        />
+      <div class="flex flex-col gap-3">
+        <label
+          for="email"
+          class="font-semibold text-gray-700 dark:text-gray-300"
+        >
+          Adresse email
+        </label>
+        <div class="p-inputgroup w-full">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-envelope"></i>
+          </span>
+          <input
+            pInputText
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            placeholder="votre@email.com"
+            class="w-full"
+          />
+        </div>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label for="password" class="font-medium">Mot de passe</label>
-        <p-password
-          id="password"
-          name="password"
-          [(ngModel)]="password"
-          required
-          [feedback]="false"
-          inputClass="w-full"
-        ></p-password>
+      <div class="flex flex-col gap-3">
+        <label
+          for="password"
+          class="font-semibold text-gray-700 dark:text-gray-300"
+        >
+          Mot de passe
+        </label>
+        <div class="p-inputgroup w-full">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-lock"></i>
+          </span>
+          <p-password
+            inputId="password"
+            name="password"
+            [(ngModel)]="password"
+            [feedback]="true"
+            toggleMask
+            placeholder="••••••••"
+            inputStyleClass="w-full"
+            styleClass="w-full"
+            required
+          ></p-password>
+        </div>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label for="confirm" class="font-medium">Confirmer le mot de passe</label>
-        <p-password
-          id="confirm"
-          name="confirm"
-          [(ngModel)]="confirm"
-          required
-          [feedback]="false"
-          inputClass="w-full"
-        ></p-password>
+      <div class="flex flex-col gap-3">
+        <label
+          for="confirm"
+          class="font-semibold text-gray-700 dark:text-gray-300"
+        >
+          Confirmer le mot de passe
+        </label>
+        <div class="p-inputgroup w-full">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-shield"></i>
+          </span>
+          <p-password
+            inputId="confirm"
+            name="confirm"
+            [(ngModel)]="confirm"
+            [feedback]="false"
+            toggleMask
+            placeholder="••••••••"
+            inputStyleClass="w-full"
+            styleClass="w-full"
+            required
+          ></p-password>
+        </div>
       </div>
 
-      <button pButton type="submit" label="S'inscrire" class="w-full mt-4"></button>
-      <p class="text-center text-sm">
-        Déjà un compte ?
-        <a routerLink="/login" class="text-primary underline">Se connecter</a>
-      </p>
+      <button
+        pButton
+        type="submit"
+        label="Créer mon compte"
+        icon="pi pi-user-plus"
+        class="register-button w-full p-4 text-lg font-semibold mt-2"
+        [disabled]="!form.valid || password !== confirm"
+      ></button>
+
+      <div class="text-center">
+        <p class="text-surface-600 dark:text-surface-300 text-sm">
+          Vous avez déjà un compte ?
+          <a
+            routerLink="/login"
+            class="text-primary font-semibold hover:text-primary-600 hover:underline transition-colors ml-1"
+          >
+            Se connecter
+          </a>
+        </p>
+      </div>
     </form>
-  </p-card>
+
+    <div
+      class="text-center pt-4 border-t border-surface-200 dark:border-surface-700"
+    >
+      <p class="text-xs text-surface-500 leading-relaxed">
+        En créant un compte, vous acceptez nos
+        <a href="#" class="text-primary hover:underline"
+          >Conditions d'utilisation</a
+        >
+        et notre
+        <a href="#" class="text-primary hover:underline"
+          >Politique de confidentialité</a
+        >
+      </p>
+    </div>
+  </div>
 </section>

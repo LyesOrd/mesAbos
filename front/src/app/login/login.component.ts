@@ -28,6 +28,7 @@ declare const google: any;
     RouterLink,
   ],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements AfterViewInit {
   email = '';
