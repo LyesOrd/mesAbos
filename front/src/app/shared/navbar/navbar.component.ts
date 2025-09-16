@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
@@ -8,6 +13,7 @@ import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { AuthService, UserProfile } from '../../auth.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-navbar',
@@ -27,9 +33,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class NavbarComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly themeService = inject(ThemeService);
   private readonly profileSignal = toSignal(this.auth.getProfile(), {
     initialValue: null as UserProfile | null,
   });
+
+  readonly isDark = this.themeService.isDarkMode;
 
   readonly mobileItems = [
     { label: 'Accueil', url: '#hero' },
@@ -70,6 +79,10 @@ export class NavbarComponent {
 
   isLoggedIn() {
     return this.auth.isLoggedIn();
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 
   logout() {

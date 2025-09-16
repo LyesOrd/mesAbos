@@ -6,11 +6,13 @@ import {
   AfterViewInit,
   OnDestroy,
   HostListener,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
+import { ThemeService } from '../services/theme.service';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
@@ -66,7 +68,7 @@ interface Subscription {
   styleUrl: './dashboard.component.css',
   providers: [ConfirmationService, MessageService],
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   message = 'Bonjour !';
 
   @ViewChild('radarChart') radarChartRef!: ElementRef;
@@ -86,6 +88,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   barOptions: echarts.EChartsOption = {};
   lineOptions: echarts.EChartsOption = {};
   doughnutOptions: echarts.EChartsOption = {};
+
+  // Service de thème
+  private readonly themeService!: ThemeService;
 
   upcomingPayments: { name: string; date: string; amount: number }[] = [];
   calendarEvents: {
@@ -178,7 +183,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private readonly auth: AuthService,
     private readonly confirmationService: ConfirmationService,
     private readonly messageService: MessageService
-  ) {}
+  ) {
+    // Injection du service de thème
+    this.themeService = inject(ThemeService);
+
+    // Écouter les changements de thème
+    if (typeof window !== 'undefined') {
+      window.addEventListener('theme-changed', (event: Event) => {
+        const customEvent = event as CustomEvent;
+        this.onThemeChange(customEvent);
+      });
+    }
+  }
 
   ngOnInit() {
     const token = this.auth.getToken();
@@ -1107,5 +1123,157 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.loadMonthlySummary();
     this.loadStats();
     this.loadAllChartData();
+  }
+
+  /**
+   * Gestion du changement de thème
+   */
+  private onThemeChange(event: CustomEvent) {
+    const { isDark } = event.detail;
+    this.updateChartsTheme(isDark);
+  }
+
+  /**
+   * Met à jour le thème de tous les graphiques
+   */
+  private updateChartsTheme(isDark: boolean) {
+    const textColor = isDark ? '#e2e8f0' : '#1e293b'; // slate-300 : slate-800
+    const backgroundColor = isDark ? '#1e293b' : '#ffffff'; // slate-800 : white
+    const axisLineColor = isDark ? '#475569' : '#cbd5e1'; // slate-600 : slate-300
+    const splitLineColor = isDark ? '#374151' : '#f1f5f9'; // gray-700 : slate-100
+
+    const commonThemeOptions = {
+      textStyle: {
+        color: textColor,
+      },
+      backgroundColor: backgroundColor,
+      grid: {
+        borderColor: axisLineColor,
+      },
+    };
+
+    // Mise à jour des couleurs pour chaque graphique
+    if (this.radarInstance && Object.keys(this.radarOptions).length) {
+      const updatedRadarOptions = {
+        ...this.radarOptions,
+        ...commonThemeOptions,
+        radar: {
+          ...((this.radarOptions as any).radar || {}),
+          axisName: {
+            color: textColor,
+          },
+          axisLine: {
+            lineStyle: {
+              color: axisLineColor,
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: splitLineColor,
+            },
+          },
+        },
+      };
+      this.radarInstance.setOption(updatedRadarOptions, true);
+    }
+
+    if (this.pieInstance && Object.keys(this.pieOptions).length) {
+      const updatedPieOptions = {
+        ...this.pieOptions,
+        ...commonThemeOptions,
+      };
+      this.pieInstance.setOption(updatedPieOptions, true);
+    }
+
+    if (this.barInstance && Object.keys(this.barOptions).length) {
+      const updatedBarOptions = {
+        ...this.barOptions,
+        ...commonThemeOptions,
+        xAxis: {
+          ...((this.barOptions as any).xAxis || {}),
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: axisLineColor } },
+        },
+        yAxis: {
+          ...((this.barOptions as any).yAxis || {}),
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: axisLineColor } },
+          splitLine: { lineStyle: { color: splitLineColor } },
+        },
+      };
+      this.barInstance.setOption(updatedBarOptions, true);
+    }
+
+    if (this.lineInstance && Object.keys(this.lineOptions).length) {
+      const updatedLineOptions = {
+        ...this.lineOptions,
+        ...commonThemeOptions,
+        xAxis: {
+          ...((this.lineOptions as any).xAxis || {}),
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: axisLineColor } },
+        },
+        yAxis: {
+          ...((this.lineOptions as any).yAxis || {}),
+          axisLabel: { color: textColor },
+          axisLine: { lineStyle: { color: axisLineColor } },
+          splitLine: { lineStyle: { color: splitLineColor } },
+        },
+      };
+      this.lineInstance.setOption(updatedLineOptions, true);
+    }
+
+    if (this.doughnutInstance && Object.keys(this.doughnutOptions).length) {
+      const updatedDoughnutOptions = {
+        ...this.doughnutOptions,
+        ...commonThemeOptions,
+      };
+      this.doughnutInstance.setOption(updatedDoughnutOptions, true);
+    }
+  }
+
+  /**
+   * Obtient les couleurs de thème sombre pour les graphiques
+   */
+  private getDarkChartColors() {
+    return {
+      primary: '#3b82f6', // blue-500
+      secondary: '#10b981', // emerald-500
+      success: '#059669', // emerald-600
+      warning: '#f59e0b', // amber-500
+      danger: '#ef4444', // red-500
+      info: '#06b6d4', // cyan-500
+      text: '#e2e8f0', // slate-300
+      background: '#1e293b', // slate-800
+      surface: '#334155', // slate-700
+      border: '#475569', // slate-600
+    };
+  }
+
+  /**
+   * Obtient les couleurs de thème clair pour les graphiques
+   */
+  private getLightChartColors() {
+    return {
+      primary: '#3b82f6', // blue-500
+      secondary: '#10b981', // emerald-500
+      success: '#059669', // emerald-600
+      warning: '#f59e0b', // amber-500
+      danger: '#ef4444', // red-500
+      info: '#06b6d4', // cyan-500
+      text: '#1e293b', // slate-800
+      background: '#ffffff', // white
+      surface: '#f8fafc', // slate-50
+      border: '#cbd5e1', // slate-300
+    };
+  }
+
+  ngOnDestroy() {
+    // Nettoyer les instances ECharts si nécessaire
+    this.radarInstance?.dispose();
+    this.pieInstance?.dispose();
+    this.barInstance?.dispose();
+    this.lineInstance?.dispose();
+    this.doughnutInstance?.dispose();
   }
 }

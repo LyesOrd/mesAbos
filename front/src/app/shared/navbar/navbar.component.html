@@ -18,39 +18,61 @@
 
     <!-- Menu utilisateur / connexion -->
     @if (isLoggedIn()) {
-      <div class="flex items-center gap-3">
-        <p-menu #userMenu [model]="userItems" [popup]="true"></p-menu>
-        <a
-          routerLink="/profile"
-          class="inline-flex h-10 w-10 overflow-hidden rounded-full border border-surface-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-          [attr.aria-label]="'Ouvrir le profil de ' + profileLabel()"
-          [attr.title]="profileLabel()"
-        >
-          <img
-            [ngSrc]="avatarUrl()"
-            [attr.alt]="avatarAlt()"
-            width="40"
-            height="40"
-            class="h-full w-full object-cover"
-            priority
-          />
-        </a>
-        <button
-          pButton
-          type="button"
-          icon="pi pi-ellipsis-v"
-          class="p-button-text p-button-sm md:p-button-md"
-          (click)="userMenu.toggle($event)"
-          aria-label="Ouvrir le menu utilisateur"
-        ></button>
-      </div>
+    <div class="flex items-center gap-3">
+      <!-- Toggle de thème simple -->
+      <button
+        pButton
+        type="button"
+        [icon]="isDark() ? 'pi pi-sun' : 'pi pi-moon'"
+        class="p-button-text p-button-rounded"
+        (click)="toggleTheme()"
+        [title]="isDark() ? 'Mode clair' : 'Mode sombre'"
+      ></button>
+
+      <p-menu #userMenu [model]="userItems" [popup]="true"></p-menu>
+      <a
+        routerLink="/profile"
+        class="inline-flex h-10 w-10 overflow-hidden rounded-full border border-surface-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+        [attr.aria-label]="'Ouvrir le profil de ' + profileLabel()"
+        [attr.title]="profileLabel()"
+      >
+        <img
+          [ngSrc]="avatarUrl()"
+          [attr.alt]="avatarAlt()"
+          width="40"
+          height="40"
+          class="h-full w-full object-cover"
+          priority
+        />
+      </a>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-ellipsis-v"
+        class="p-button-text p-button-sm md:p-button-md"
+        (click)="userMenu.toggle($event)"
+        aria-label="Ouvrir le menu utilisateur"
+      ></button>
+    </div>
     } @else {
+    <div class="flex items-center gap-3">
+      <!-- Toggle de thème simple -->
+      <button
+        pButton
+        type="button"
+        [icon]="isDark() ? 'pi pi-sun' : 'pi pi-moon'"
+        class="p-button-text p-button-rounded"
+        (click)="toggleTheme()"
+        [title]="isDark() ? 'Mode clair' : 'Mode sombre'"
+      ></button>
+
       <button
         pButton
         label="Connexion"
         class="p-button-sm md:p-button-md"
         routerLink="/login"
       ></button>
+    </div>
     }
 
     <!-- Burger mobile -->
