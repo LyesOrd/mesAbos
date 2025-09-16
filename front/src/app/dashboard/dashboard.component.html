@@ -6,22 +6,121 @@
 <section class="py-8 px-6 max-w-7xl mx-auto">
   <h2 class="text-3xl font-bold mb-8">{{ message }}</h2>
 
-  <div class="grid gap-8 md:grid-cols-3 mb-12">
-    <div class="md:col-span-2">
-      <p-calendar
-        [(ngModel)]="selectedDates"
-        inline="true"
-        selectionMode="multiple"
-      ></p-calendar>
-      <ul class="mt-4 list-disc list-inside">
-        <li *ngFor="let p of upcomingPayments">
-          {{ p.name }} - {{ p.date | date }}
-        </li>
-      </ul>
+  <!-- Section des prochains paiements avec design amélioré -->
+  <div class="grid gap-8 lg:grid-cols-3 mb-12">
+    <div class="lg:col-span-2 calendar-container">
+      <h3 class="text-xl font-semibold mb-4">📅 Calendrier des paiements</h3>
+
+      <!-- Message motivationnel -->
+      <div class="motivational-message">
+        <p>{{ getMotivationalMessage() }}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 flex-1">
+        <!-- Calendrier -->
+        <div class="calendar-wrapper flex flex-col">
+          <div class="flex-1 flex items-start justify-center">
+            <p-calendar
+              [(ngModel)]="selectedDates"
+              [inline]="true"
+              selectionMode="multiple"
+              [showIcon]="false"
+              [numberOfMonths]="1"
+              dateFormat="dd/mm/yy"
+              (onMonthChange)="onCalendarMonthChange()"
+              (onYearChange)="onCalendarYearChange()"
+            ></p-calendar>
+          </div>
+        </div>
+        <!-- Liste des prochains paiements -->
+        <div class="flex flex-col">
+          <h4 class="text-lg font-medium mb-3 text-gray-700">
+            Prochains paiements
+          </h4>
+          <div class="flex-1">
+            <div
+              class="payments-list"
+              *ngIf="upcomingPayments.length > 0; else noPayments"
+            >
+              <div
+                *ngFor="let payment of upcomingPayments.slice(0, 5)"
+                class="payment-item"
+              >
+                <div class="flex-1">
+                  <div class="font-medium text-gray-800">
+                    {{ payment.name }}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    {{ payment.date | date : "dd/MM/yyyy" }}
+                  </div>
+                </div>
+                <div class="payment-amount">
+                  -{{ payment.amount || 0 | number : "1.2-2" }}€
+                </div>
+              </div>
+            </div>
+            <ng-template #noPayments>
+              <div
+                class="text-center py-8 text-gray-500 flex-1 flex flex-col justify-center"
+              >
+                <i class="pi pi-calendar-plus text-4xl mb-2"></i>
+                <p>Aucun paiement prévu</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="p-4 rounded-xl border shadow-sm">
-      <div #radarChart class="w-full h-72"></div>
+
+    <!-- Graphique radar à côté -->
+    <div class="p-6 rounded-xl border shadow-sm bg-white">
+      <div class="radar-chart-container">
+        <div #radarChart style="width: 100%; height: 300px"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- Section des graphiques avec onglets -->
+  <div class="mb-12 p-6 rounded-xl border shadow-sm">
+    <h3 class="text-xl font-semibold mb-4">Analyse de vos abonnements</h3>
+    <p-tabView (onChange)="onTabChange($event)">
+      <p-tabPanel header="Dépenses par catégorie">
+        <div class="chart-container">
+          <div #pieChart style="width: 100%; height: 400px"></div>
+        </div>
+        <div class="mt-4 text-center">
+          <p class="text-lg font-medium">
+            Total mensuel: {{ monthlyExpenses.total | number : "1.2-2" }}€
+          </p>
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel header="Répartition par fréquence">
+        <div class="chart-container">
+          <div #doughnutChart style="width: 100%; height: 400px"></div>
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel header="Évolution des paiements">
+        <div class="chart-container">
+          <div #lineChart style="width: 100%; height: 400px"></div>
+        </div>
+        <div class="mt-4 text-center text-sm text-gray-600">
+          <p>
+            Historique des 6 derniers mois et prévision des 6 prochains mois
+          </p>
+        </div>
+      </p-tabPanel>
+
+      <p-tabPanel header="Nouveaux abonnements">
+        <div class="chart-container">
+          <div #barChart style="width: 100%; height: 400px"></div>
+        </div>
+        <div class="mt-4 text-center text-sm text-gray-600">
+          <p>Évolution de vos nouveaux abonnements au fil du temps</p>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 
   <!-- Tableau des abonnements -->
@@ -48,14 +147,14 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>Nom</th>
-          <th>Montant</th>
-          <th>Fréquence</th>
-          <th>Date de début</th>
-          <th>Date de fin</th>
-          <th>Catégorie</th>
-          <th>Paiements</th>
-          <th>Actions</th>
+          <th scope="col">Nom</th>
+          <th scope="col">Montant</th>
+          <th scope="col">Fréquence</th>
+          <th scope="col">Date de début</th>
+          <th scope="col">Date de fin</th>
+          <th scope="col">Catégorie</th>
+          <th scope="col">Paiements</th>
+          <th scope="col">Actions</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-subscription>
