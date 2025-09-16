@@ -1,3 +1,10 @@
+# [1.5.0-rc.9](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.8...v1.5.0-rc.9) (2025-09-16)
+
+
+### Features
+
+* add charts + fixs ([#65](https://github.com/LyesOrd/mesAbos/issues/65)) ([217e219](https://github.com/LyesOrd/mesAbos/commit/217e2191e1c2f58b7798f716552664437ba8c1f7))
+
 # [1.5.0-rc.8](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.7...v1.5.0-rc.8) (2025-09-15)
 
 
