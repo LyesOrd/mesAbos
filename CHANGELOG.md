@@ -1,3 +1,10 @@
+# [1.5.0-rc.10](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.9...v1.5.0-rc.10) (2025-09-16)
+
+
+### Bug Fixes
+
+* route for avatar ([#68](https://github.com/LyesOrd/mesAbos/issues/68)) ([4513a3c](https://github.com/LyesOrd/mesAbos/commit/4513a3ce44e4542632e76275e75194ed41114b03))
+
 # [1.5.0-rc.9](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.8...v1.5.0-rc.9) (2025-09-16)
 
 
