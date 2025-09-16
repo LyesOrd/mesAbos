@@ -20,6 +20,7 @@ model User {
   email     String?  @unique
   password  String? // Null si connexion via OAuth2
   name      String
+  avatar    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -53,6 +54,8 @@ model Subscription {
   frequency  Frequency // Mensuel ou Annuel
   startDate  DateTime
   endDate    DateTime?
+  currency   String    @default("EUR")
+  notes      String?
   userId     String
   categoryId String?
 

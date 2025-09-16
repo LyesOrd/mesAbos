@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - 'feature/**'
+      - "feature/**"
   pull_request:
     branches:
       - develop
@@ -14,28 +14,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set lowercase owner
-        run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
-      - name: Set branch name
-        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
+
+      - name: Compute metadata (owner / branch / docker-safe tag)
+        shell: bash
+        run: |
+          echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+          BRANCH_RAW="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          # lowercase
+          BRANCH_LC="${BRANCH_RAW,,}"
+          # remplace les / par -
+          BRANCH_LC="${BRANCH_LC//\//-}"
+          # garde uniquement [a-z0-9._-] et remplace le reste par -
+          BRANCH_SAFE="$(echo "$BRANCH_LC" | sed -E 's/[^a-z0-9._-]+/-/g')"
+          # supprime les - en doublon
+          BRANCH_SAFE="$(echo "$BRANCH_SAFE" | sed -E 's/-{2,}/-/g' | sed -E 's/^-+|-+$//g')"
+          # tronque pour respecter la limite de 128 chars (on se garde une marge)
+          BRANCH_SAFE="${BRANCH_SAFE:0:120}"
+          # fallback au cas improbable où ça devient vide
+          if [ -z "$BRANCH_SAFE" ]; then BRANCH_SAFE="detached"; fi
+          echo "BRANCH_NAME=$BRANCH_RAW" >> $GITHUB_ENV
+          echo "DOCKER_TAG=$BRANCH_SAFE" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::12}" >> $GITHUB_ENV
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version-file: ".nvmrc"
+          cache: "npm"
           cache-dependency-path: front/package-lock.json
+
       - name: Install dependencies
         working-directory: front
         run: npm ci
+
       - name: Run unit tests
         working-directory: front
         run: npm test
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
@@ -44,34 +66,50 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER }}/mesabos-front:latest
             ghcr.io/${{ env.OWNER }}/mesabos-front:${{ github.sha }}
-            ghcr.io/${{ env.OWNER }}/mesabos-front:${{ env.BRANCH_NAME }}
+            ghcr.io/${{ env.OWNER }}/mesabos-front:${{ env.DOCKER_TAG }}
 
   backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set lowercase owner
-        run: echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
-      - name: Set branch name
-        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
+
+      - name: Compute metadata (owner / branch / docker-safe tag)
+        shell: bash
+        run: |
+          echo "OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+          BRANCH_RAW="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          BRANCH_LC="${BRANCH_RAW,,}"
+          BRANCH_LC="${BRANCH_LC//\//-}"
+          BRANCH_SAFE="$(echo "$BRANCH_LC" | sed -E 's/[^a-z0-9._-]+/-/g')"
+          BRANCH_SAFE="$(echo "$BRANCH_SAFE" | sed -E 's/-{2,}/-/g' | sed -E 's/^-+|-+$//g')"
+          BRANCH_SAFE="${BRANCH_SAFE:0:120}"
+          if [ -z "$BRANCH_SAFE" ]; then BRANCH_SAFE="detached"; fi
+          echo "BRANCH_NAME=$BRANCH_RAW" >> $GITHUB_ENV
+          echo "DOCKER_TAG=$BRANCH_SAFE" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::12}" >> $GITHUB_ENV
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: npm
+          node-version-file: ".nvmrc" # <-- aligne le back aussi sur .nvmrc
+          cache: "npm"
           cache-dependency-path: back/package-lock.json
+
       - name: Install dependencies
         working-directory: back
         run: npm ci
+
       - name: Run unit tests
         working-directory: back
         run: npm test
+
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push image
         uses: docker/build-push-action@v5
         with:
@@ -80,4 +118,4 @@ jobs:
           tags: |
             ghcr.io/${{ env.OWNER }}/mesabos-back:latest
             ghcr.io/${{ env.OWNER }}/mesabos-back:${{ github.sha }}
-            ghcr.io/${{ env.OWNER }}/mesabos-back:${{ env.BRANCH_NAME }}
+            ghcr.io/${{ env.OWNER }}/mesabos-back:${{ env.DOCKER_TAG }}

@@ -1,3 +1,88 @@
+# [1.5.0-rc.8](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.7...v1.5.0-rc.8) (2025-09-15)
+
+
+### Features
+
+* table stats for subs ([#63](https://github.com/LyesOrd/mesAbos/issues/63)) ([1a767b3](https://github.com/LyesOrd/mesAbos/commit/1a767b35c3f75b3edf5fee2715187cdccd11abb2))
+
+# [1.5.0-rc.7](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.6...v1.5.0-rc.7) (2025-09-15)
+
+
+### Features
+
+* add profile navigation and avatar support ([#62](https://github.com/LyesOrd/mesAbos/issues/62)) ([e8001fc](https://github.com/LyesOrd/mesAbos/commit/e8001fce058bb6754f26b1e972e6f06da5b60623))
+
+# [1.5.0-rc.6](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.5...v1.5.0-rc.6) (2025-09-15)
+
+
+### Features
+
+* **front:** add profile profile page ([#61](https://github.com/LyesOrd/mesAbos/issues/61)) ([252f227](https://github.com/LyesOrd/mesAbos/commit/252f2274b1678e5d6d9dae8d2513d1c8a984bded))
+
+# [1.5.0-rc.5](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.4...v1.5.0-rc.5) (2025-09-15)
+
+
+### Features
+
+* support user avatar uploads ([#60](https://github.com/LyesOrd/mesAbos/issues/60)) ([9345675](https://github.com/LyesOrd/mesAbos/commit/93456754429c2606c6e660d4e35a7f0f213d23c7))
+
+# [1.5.0-rc.4](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.3...v1.5.0-rc.4) (2025-09-15)
+
+
+### Bug Fixes
+
+* stabilize Google authentication verification ([#59](https://github.com/LyesOrd/mesAbos/issues/59)) ([4705f50](https://github.com/LyesOrd/mesAbos/commit/4705f502f0902784f1b83c686fd50e9190b7d234))
+
+# [1.5.0-rc.3](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.2...v1.5.0-rc.3) (2025-09-15)
+
+
+### Bug Fixes
+
+* import style tsconfig ([42de7c8](https://github.com/LyesOrd/mesAbos/commit/42de7c820f2a00e4f8dbb2456e6aae334a96382d))
+
+# [1.5.0-rc.2](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.1...v1.5.0-rc.2) (2025-09-15)
+
+
+### Features
+
+* **back:** add users module and ensure auth id usage ([#56](https://github.com/LyesOrd/mesAbos/issues/56)) ([4d5aff5](https://github.com/LyesOrd/mesAbos/commit/4d5aff5ff8cb254580def0e31c702d3e57c9c814))
+
+# [1.5.0-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.5.0-rc.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* ci error when npm ci test ([45c6964](https://github.com/LyesOrd/mesAbos/commit/45c6964f44c998ef4f1d59888d5cdac48deffa22))
+* sync package lock back ([59de4a4](https://github.com/LyesOrd/mesAbos/commit/59de4a412478c6a243df52c92859c3c8b353f6e4))
+
+
+### Features
+
+* extend subscription details ([#55](https://github.com/LyesOrd/mesAbos/issues/55)) ([5744d4a](https://github.com/LyesOrd/mesAbos/commit/5744d4aa044e7cd201929b9fdeba7258edde1478))
+
+## [1.4.1-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.4.1-rc.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* ci error when npm ci test ([45c6964](https://github.com/LyesOrd/mesAbos/commit/45c6964f44c998ef4f1d59888d5cdac48deffa22))
+* sync package lock back ([59de4a4](https://github.com/LyesOrd/mesAbos/commit/59de4a412478c6a243df52c92859c3c8b353f6e4))
+
+## [1.4.1-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.4.1-rc.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* ci error when npm ci test ([45c6964](https://github.com/LyesOrd/mesAbos/commit/45c6964f44c998ef4f1d59888d5cdac48deffa22))
+* sync package lock back ([59de4a4](https://github.com/LyesOrd/mesAbos/commit/59de4a412478c6a243df52c92859c3c8b353f6e4))
+
+## [1.4.1-rc.2](https://github.com/LyesOrd/mesAbos/compare/v1.4.1-rc.1...v1.4.1-rc.2) (2025-09-15)
+
+
+### Bug Fixes
+
+* sync package lock back ([97f3369](https://github.com/LyesOrd/mesAbos/commit/97f3369b2b30e91e391d98addc98e7fa6f389c66))
+
 ## [1.4.1-rc.1](https://github.com/LyesOrd/mesAbos/compare/v1.4.0...v1.4.1-rc.1) (2025-09-14)
 
 

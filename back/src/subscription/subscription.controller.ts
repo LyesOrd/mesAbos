@@ -1,56 +1,60 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { PrismaService } from '../prisma.service';
+import { SubscriptionService } from './subscription.service';
+import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { UpdateSubscriptionDto } from './dto/update-subscription.dto';
 
 @Controller('subscriptions')
 @UseGuards(AuthGuard('jwt'))
 export class SubscriptionController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly subscriptionService: SubscriptionService) {}
 
   @Post()
-  async create(@Body() body: any, @Req() req: any) {
+  async create(
+    @Body(ValidationPipe) createSubscriptionDto: CreateSubscriptionDto,
+    @Req() req: any,
+  ) {
     const userId = req.user.id;
-    const {
-      name,
-      amount,
-      frequency,
-      startDate,
-      endDate,
-      category,
-    } = body;
+    return this.subscriptionService.create(userId, createSubscriptionDto);
+  }
 
-    let categoryRecord = null;
-    if (category) {
-      categoryRecord = await this.prisma.category.upsert({
-        where: { name: category },
-        update: {},
-        create: { name: category },
-      });
-    }
+  @Get()
+  async findAll(@Req() req: any) {
+    const userId = req.user.id;
+    return this.subscriptionService.findAll(userId);
+  }
 
-    const subscription = await this.prisma.subscription.create({
-      data: {
-        name,
-        amount,
-        frequency,
-        startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
-        userId,
-        categoryId: categoryRecord ? categoryRecord.id : null,
-      },
-    });
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Req() req: any) {
+    const userId = req.user.id;
+    return this.subscriptionService.findOne(userId, id);
+  }
 
-    await this.prisma.payment.create({
-      data: {
-        subscriptionId: subscription.id,
-        userId,
-        amount,
-        paymentDate: new Date(startDate),
-        status: 'PENDING',
-      },
-    });
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body(ValidationPipe) updateSubscriptionDto: UpdateSubscriptionDto,
+    @Req() req: any,
+  ) {
+    const userId = req.user.id;
+    return this.subscriptionService.update(userId, id, updateSubscriptionDto);
+  }
 
-    return subscription;
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Req() req: any) {
+    const userId = req.user.id;
+    return this.subscriptionService.delete(userId, id);
   }
 }
 

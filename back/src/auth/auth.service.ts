@@ -1,20 +1,81 @@
 import {
   ConflictException,
   Injectable,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma.service';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 
+interface GoogleTokenInfo {
+  aud: string;
+  sub: string;
+  email?: string;
+  name?: string;
+}
+
+interface GoogleTokenError {
+  error?: string;
+  error_description?: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwt: JwtService,
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+    private readonly config: ConfigService,
   ) {}
+
+  private get googleClientId(): string {
+    const clientId = this.config.get<string>('GOOGLE_CLIENT_ID')?.trim();
+    if (!clientId) {
+      throw new ServiceUnavailableException('Google client not configured');
+    }
+    return clientId;
+  }
+
+  private async requestGoogleTokenInfo(
+    token: string,
+  ): Promise<GoogleTokenInfo> {
+    const response = await fetch('https://oauth2.googleapis.com/tokeninfo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ id_token: token }).toString(),
+    });
+
+    const payloadText = await response.text();
+    if (!response.ok) {
+      let errorDetails: GoogleTokenError | undefined;
+      try {
+        errorDetails = JSON.parse(payloadText) as GoogleTokenError;
+      } catch {
+        errorDetails = undefined;
+      }
+      const reason =
+        errorDetails?.error_description ??
+        errorDetails?.error ??
+        'Invalid Google token';
+      throw new UnauthorizedException(reason);
+    }
+
+    let tokenInfo: GoogleTokenInfo;
+    try {
+      tokenInfo = JSON.parse(payloadText) as GoogleTokenInfo;
+    } catch {
+      throw new UnauthorizedException('Unable to parse Google token response');
+    }
+
+    if (!tokenInfo.sub || !tokenInfo.aud) {
+      throw new UnauthorizedException('Incomplete Google token information');
+    }
+
+    return tokenInfo;
+  }
 
   async register(data: RegisterDto) {
     const existing = await this.prisma.user.findUnique({
@@ -56,8 +117,9 @@ export class AuthService {
 
   private async validateUser(email: string, password: string) {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user || !user.password) return null;
-    const isValid = this.verifyPassword(password, user.password);
+    const passwordHash = user?.password;
+    if (!passwordHash) return null;
+    const isValid = this.verifyPassword(password, passwordHash);
     if (!isValid) return null;
     return user;
   }
@@ -75,28 +137,26 @@ export class AuthService {
   }
 
   async googleLogin(token: string) {
-    const res = await fetch(
-      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
-    );
-    if (!res.ok) {
-      throw new UnauthorizedException();
-    }
-    const payload: any = await res.json();
-    if (payload.aud !== process.env.GOOGLE_CLIENT_ID) {
-      throw new UnauthorizedException();
+    const payload = await this.requestGoogleTokenInfo(token);
+    const clientId = this.googleClientId;
+    if (payload.aud !== clientId) {
+      throw new UnauthorizedException('Invalid Google client');
     }
     let user = await this.prisma.user.findUnique({
       where: { providerId: payload.sub },
     });
     if (!user) {
-      const existing = payload.email
-        ? await this.prisma.user.findUnique({ where: { email: payload.email } })
+      const normalizedEmail = payload.email?.toLowerCase();
+      const existing = normalizedEmail
+        ? await this.prisma.user.findUnique({
+            where: { email: normalizedEmail },
+          })
         : null;
       if (!existing) {
         user = await this.prisma.user.create({
           data: {
-            email: payload.email,
-            name: payload.name || payload.email,
+            email: normalizedEmail ?? undefined,
+            name: payload.name || normalizedEmail || payload.sub,
             provider: 'GOOGLE',
             providerId: payload.sub,
           },
