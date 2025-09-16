@@ -1,3 +1,10 @@
+# [1.5.0-rc.11](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.10...v1.5.0-rc.11) (2025-09-16)
+
+
+### Features
+
+* Add production deployment infrastructure ([12a59b1](https://github.com/LyesOrd/mesAbos/commit/12a59b144969837292d439c5772b61edc64a5719))
+
 # [1.5.0-rc.10](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.9...v1.5.0-rc.10) (2025-09-16)
 
 
