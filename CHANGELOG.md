@@ -1,3 +1,18 @@
+# [1.5.0-rc.11](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.10...v1.5.0-rc.11) (2025-09-25)
+
+
+### Bug Fixes
+
+* add env template ([04d8762](https://github.com/LyesOrd/mesAbos/commit/04d87623b21ac57b7c16a467ff94eb56166c7ec3))
+* Configure CORS for production domain ([8875758](https://github.com/LyesOrd/mesAbos/commit/8875758d4d1b7da1c511c4db7801f94f4e846663))
+* Configure production API URLs and Google OAuth ([6924d1d](https://github.com/LyesOrd/mesAbos/commit/6924d1d4e95fb58eb029fd3db01c3f9fc7ee4fc8))
+* Resolve environment variables in deployment config ([54e3389](https://github.com/LyesOrd/mesAbos/commit/54e3389642d83e08939a8a9798ef44213af8a940))
+
+
+### Features
+
+* Add production deployment infrastructure ([12a59b1](https://github.com/LyesOrd/mesAbos/commit/12a59b144969837292d439c5772b61edc64a5719))
+
 # [1.5.0-rc.11](https://github.com/LyesOrd/mesAbos/compare/v1.5.0-rc.10...v1.5.0-rc.11) (2025-09-16)
 
 
