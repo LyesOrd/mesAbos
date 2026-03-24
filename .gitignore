@@ -85,6 +85,8 @@ web_modules/
 
 # garde un exemple versionné si tu veux
 !**/src/environments/environment.local.example.ts
+!**/src/environments/environment.prod.ts
+!**/src/environments/environment.ts
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

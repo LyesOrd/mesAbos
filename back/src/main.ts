@@ -19,7 +19,11 @@ async function bootstrap() {
 
   // En production, ajouter les domaines de production
   if (process.env.NODE_ENV === 'production') {
-    allowedOrigins.push('https://mesabos.com', 'https://www.mesabos.com');
+    allowedOrigins.push(
+      'https://mesabos.com',
+      'https://www.mesabos.com',
+      'http://147.93.88.226',
+    );
   }
 
   app.enableCors({
