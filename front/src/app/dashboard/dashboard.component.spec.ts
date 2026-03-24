@@ -52,7 +52,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should populate upcoming payments', () => {
-    const events = [{ name: 'Netflix', date: '2024-01-01' }];
+    const events = [{ name: 'Netflix', date: '2024-01-01', amount: 0 }];
     httpSpy.get.and.returnValue(of(events));
 
     component.loadUpcoming();
@@ -66,4 +66,3 @@ describe('DashboardComponent', () => {
     expect(component.selectedDates.length).toBe(1);
   });
 });
-
